@@ -1,7 +1,20 @@
 class Game {
 	constructor() {
 		document.body.innerHTML = ''
-		this.tileMap =
+		this.clientHeight = document.documentElement.clientHeight
+		this.clientWidth = document.documentElement.clientWidth
+		this.aspectRatio = (clientWidth * 0.8) / clientHeight
+		document.querySelector('main div').style.flexGrow = this.aspectRatio
+		this.view = document.querySelector('table')
+		this.viewData = new Array(5).fill(new Array(5).fill({}))
+		this.viewData.forEach(row => {
+			var tableRow = document.createElement('tr')
+			row.forEach(cell => {
+				tableCell = document.createElement('td')
+				tableRow.append(tableCell)
+			})
+			view.append(tableRow)
+		})
 	}
 
 	clearBody() {

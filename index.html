@@ -1,7 +1,53 @@
 <html>
-	<head>
-		<script type="text/javascript" charset="UTF-8" src="/game.js"></script>
-	</head>
-	<body>
-	</body>
+  <head>
+    <title>Daedalus</title>
+    <link rel="stylesheet" href="./style.css"  />
+    <script src='./state.js'></script>
+    <script>
+      function loadState() {
+        var state = JSON.parse(localStorage.getItem('gameState'))
+        document.querySelector('pre').innerHTML = JSON.stringify(state, null, '  ')
+      }
+    </script>
+  </head>
+  <body onload="loadState()">
+    <header>
+        <img src="./champion.gif" />
+        <div>
+          <h1>Daedalus: Rogue-Like</h1>
+        </div>
+    </header>
+    <main>
+      <div class="definition">
+        <p>
+          <a href="https://en.wikipedia.org/wiki/Daedalus" target="_blank">Daedalus</a>:
+          builder of the mythical Labyrinth.
+        </p>
+      </div>
+      <div class="definition">
+        <p>
+          <a href="https://en.wikipedia.org/wiki/Roguelike" target="_blank">Roguelike</a>:
+          A game belonging to a sub-genre of video games, characterized by a dungeon crawl
+          through procedurally generated game levels, turn-based gameplay, tile-based graphics,
+          and permanent death of the player-character.
+        </p>
+      </div>
+      <h3>Description</h3><hr/>
+      <p>
+        In the context of this project, Daedalus is the title of a minimal roguelike rpg
+        that takes place in an infinite labyrinth. It is a project for my college web-design
+        class, and while it is far from my first web app, it is my first attempt at a video game.
+      </p>
+      <p>
+        Daedalus is played using only the mouse, to direct your character around a 5x5 grid of tiles.
+        This 5x5 grid represents one room of infinitely many, and each tile represents a floor, wall,
+        or door. Additionally, any floor tiles also hold data about what, if anything, is occupying
+        that space: you, a monster, an item, etc. Each room contains 2-4 doors, that lead to other rooms.
+        <a href="./game.html">Demo</a>
+      </p>
+      <h3>Sample state</h3><hr/>
+      <pre>
+      </pre>
+    </main>
+  </body>
 </html>
