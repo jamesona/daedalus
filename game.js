@@ -8,6 +8,15 @@ Object.prototype.toArray = function() {
 }
 
 class Element {
+	constructor(selector) {
+		if (selector === 'body')
+			this._ele = document.body
+		else
+			this._ele = document.createElement(selector)
+	}
+	get element() {
+		return this._ele
+	}
 	clear() {
 		let children = this.element.children
 		for (let i=0; i < children.length; i++) {
@@ -29,8 +38,7 @@ class Element {
 
 class Game extends Element {
 	constructor() {
-		super()
-		this.element = document.body
+		super('body')
 		this.header = new Header()
 		this.main = new Main()
 		this.footer = new Footer()
@@ -39,26 +47,25 @@ class Game extends Element {
 			this.main,
 			this.footer
 		]
+		this.appendChildren(true)
 	}
 }
 
 class Header extends Element {
 	constructor() {
-		super()
-		this.element = document.createElement('header')
+		super('header')
 	}
 }
 
 class Main extends Element {
 	constructor() {
-		super()
-		this.element = document.createElement('main')
+		super('main')
 		this.leftBar = new Sidebar()
-		this.map = new Map()
+		this.view = new View()
 		this.rightBar = new Sidebar()
 		this.children = [
 			this.leftBar,
-			this.map,
+			this.view,
 			this.rightBar
 		]
 	}
@@ -66,15 +73,31 @@ class Main extends Element {
 
 class Sidebar extends Element {
 	constructor() {
-		super()
-		this.element = document.createElement('aside')
+		super('aside')
+	}
+}
+
+class View extends Element {
+	constructor() {
+		super('div')
+		let clientHeight = document.documentElement.clientHeight
+		let clientWidth = document.documentElement.clientWidth
+		this.aspectRatio = (clientWidth * 0.8) / clientHeight
+		this.children = [
+			new Map()
+		]
+	}
+	get aspectRatio() {
+		return this.element.style.flexGrow
+	}
+	set aspectRatio(ratio) {
+		this.element.style.flexGrow = ratio
 	}
 }
 
 class Map extends Element {
 	constructor() {
-		super()
-		this.element = document.createElement('table')
+		super('table')
 		this.children = [
 			new MapRow(),
 			new MapRow(),
@@ -87,8 +110,7 @@ class Map extends Element {
 
 class MapRow extends Element {
 	constructor() {
-		super()
-		this.element = document.createElement('tr')
+		super('tr')
 		this.children = [
 			new MapCell(),
 			new MapCell(),
@@ -101,14 +123,12 @@ class MapRow extends Element {
 
 class MapCell extends Element {
 	constructor() {
-		super()
-		this.element = document.createElement('td')
+		super('td')
 	}
 }
 
 class Footer extends Element {
 	constructor() {
-		super()
-		this.element = document.createElement('footer')
+		super('footer')
 	}
 }

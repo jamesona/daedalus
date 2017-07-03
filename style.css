@@ -1,35 +1,104 @@
 * {
-	margin: 0;
-	padding: 0;
-	border: 1px solid black;
-	box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
 }
-*:focus {
-	outline: none;
-}
-html, body {
-	width: 100%;
-	height: 100%;
-}
+html {
+    font-size: 10px;
+    font-family: helvetica, arial, sans-serif;
+    background-color: #ccc;
+    background: -moz-radial-gradient(
+      center, ellipse cover, #ccc 0%, rgba(48,48,48,1) 100%
+    );
+    background: -webkit-radial-gradient(
+      center, ellipse cover, #ccc 0%,rgba(48,48,48,1) 100%
+    );
+    background: radial-gradient(
+      ellipse at center, #ccc 0%,rgba(48,48,48,1) 100%
+    );
+    filter: progid:DXImageTransform.Microsoft.gradient(
+      startColorstr='#494949', endColorstr='#303030',GradientType=1
+    );
+    padding: 3rem;
+  }
 body {
-	display: flex;
-	flex-direction: column;
+  text-align: center;
+  background-color: #fff;
+  border-radius: 2rem;
+  box-shadow: 0 0 1rem black;
+  width: 75rem;
+  margin: auto;
 }
-header, footer {
-	flex-grow: 1;
+header {
+  background-color: #888c98;
+  border-radius: 2rem 2rem 0 0;
+  overflow: hidden;
+}
+header img {
+  position: relative;
+  height: 15rem;
+  z-index: 1;
+}
+header div {
+  margin-top: -1.1rem;
+  background-color: green;
+  margin-bottom: 7rem;
+}
+header h1 {
+  position: absolute;
+  margin: auto;
+  width: 75rem;
+  z-index: 5;
+  padding: 2rem;
+  font-size: 3rem;
+  color: #dddddd;
+  background-color: #353535;
+  letter-spacing: 2px;
 }
 main {
-	flex-grow: 5;
-	display: flex;
-	flex-direction: row;
+  padding: 2rem;
+  text-align: left;
+  font-size: 1.5rem;
 }
-aside {
-	flex-grow: 2;
+main p, .definition {
+  margin: 1rem 8%;
+  line-height: 1.2;
 }
-table {
-	flex-grow: 6;
+.definition {
+  font-family: monospace;
+  padding: 1rem;
+  background: #ddd;
+  margin-bottom: 3rem;
+  box-shadow: inset 0 0 0.3rem gray;
+  border-radius: 1rem;
+  break-inside: avoid;
 }
-tr, td {
-	height: 12vw;
-	width: 12vw;
+.definition a, .definition  a:visited {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #333;
+  transition: all 0.1s ease;
+}
+.definition a:hover {
+  color: #888;
+  transition: all 0.1s ease;
+}
+main h3 {
+  display: inline-block;
+  margin: 1rem 0 0 3rem;
+}
+hr {
+  border: 1px solid;
+  border-style: inset;
+  margin: 0 3rem 2rem;
+}
+pre {
+  padding: 1rem;
+  background-color: #555;
+  margin: 0 3rem; 3rem;
+  font-size: 1.1rem;
+  color: #eee;
+  height: 40rem;
+  overflow-y: scroll;
 }
