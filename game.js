@@ -1,3 +1,5 @@
+'use strict'
+
 Object.prototype.forEach = function(fn) {
 	Object.keys(this).forEach( key => {
 		fn(this[key])
@@ -7,15 +9,33 @@ Object.prototype.toArray = function() {
 	return Object.keys(this).map( key => this[key] )
 }
 
-class Element {
-	constructor(selector) {
-		if (selector === 'body')
-			this._ele = document.body
-		else
-			this._ele = document.createElement(selector)
+class GameComponent {
+	constructor(game) {
+		if (game) this.game = game
 	}
-	get element() {
-		return this._ele
+}
+
+class GameElement extends GameComponent {
+	constructor(config) {
+		super(config.game)
+		this.children = []
+
+		let selector = new Selector(config.selector)
+		let element
+		if (config.selector === 'body')
+			element = document.body
+		else
+			element = document.createElement(selector.tag)
+		Object.defineProperty(this, 'element', {
+			get: function() {
+				return element
+			}
+		})
+
+		if (selector.id) element.id = selector.id
+		if (selector.classList) selector.classList.forEach( className => {
+			element.classList.add(className)
+		})
 	}
 	clear() {
 		let children = this.element.children
@@ -23,6 +43,16 @@ class Element {
 			const child = children[i]
 			this.element.removeChild(child)
 		}
+	}
+	addChild(child) {
+		this.children.push(child)
+		child.parent = this
+		return child
+	}
+	removeChild(child) {
+		delete child.parent
+		let index = this.children.indexOf(child)
+		this.children.splice(index, 1)
 	}
 	appendElement(element) {
 		this.element.appendChild(element)
@@ -36,99 +66,120 @@ class Element {
 	}
 }
 
-class Game extends Element {
-	constructor() {
-		super('body')
-		this.header = new Header()
-		this.main = new Main()
-		this.footer = new Footer()
-		this.children = [
-			this.header,
-			this.main,
-			this.footer
-		]
+class Selector {
+	constructor(selector) {
+		Object.defineProperty(this, 'tag', {
+			get: function() {
+				return selector.split(/[#.]/)[0]
+			}
+		})
+		Object.defineProperty(this, 'id', {
+			get: function() {
+				return selector.split('#')[1] || null
+			}
+		})
+		Object.defineProperty(this, 'classList', {
+			get: function() {
+				return selector.split('.').slice(1) || null
+			}
+		})
+	}
+}
+
+class Game extends GameElement {
+	constructor(roomSize) {
+		super({selector: 'body'})
+		this.roomSize = (roomSize) ? roomSize : 11
+		this.position = {x: 0, y: 0}
+		this.header = this.addChild( new Header(this) )
+		this.main = this.addChild( new Main(this) )
+		this.footer = this.addChild( new Footer(this) )
 		this.appendChildren(true)
 	}
 }
 
-class Header extends Element {
-	constructor() {
-		super('header')
+class Header extends GameElement {
+	constructor(game) {
+		super({selector: 'header', game: game})
 	}
 }
 
-class Main extends Element {
-	constructor() {
-		super('main')
-		this.leftBar = new Sidebar()
-		this.view = new View()
-		this.rightBar = new Sidebar()
-		this.children = [
-			this.leftBar,
-			this.view,
-			this.rightBar
-		]
+class Main extends GameElement {
+	constructor(game) {
+		super({selector: 'main', game: game})
+		game.leftBar = this.addChild( new LeftSidebar(game) )
+		game.view = this.addChild( new View(game) )
+		game.rightBar = this.addChild( new RightSidebar(game) )
 	}
 }
 
-class Sidebar extends Element {
-	constructor() {
-		super('aside')
+class LeftSidebar extends GameElement {
+	constructor(game) {
+		super({selector: 'aside.sidebar.left', game: game})
 	}
 }
 
-class View extends Element {
-	constructor() {
-		super('div')
-		let clientHeight = document.documentElement.clientHeight
-		let clientWidth = document.documentElement.clientWidth
-		this.aspectRatio = (clientWidth * 0.8) / clientHeight
-		this.children = [
-			new Map()
-		]
-	}
-	get aspectRatio() {
-		return this.element.style.flexGrow
-	}
-	set aspectRatio(ratio) {
-		this.element.style.flexGrow = ratio
+class RightSidebar extends GameElement {
+	constructor(game) {
+		super({selector: 'aside.sidebar.right', game: game})
 	}
 }
 
-class Map extends Element {
-	constructor() {
-		super('table')
-		this.children = [
-			new MapRow(),
-			new MapRow(),
-			new MapRow(),
-			new MapRow(),
-			new MapRow()
-		]
+class View extends GameElement {
+	constructor(game) {
+		super({selector: 'div.map-wrapper', game: game})
+		game.map = this.addChild( new Map(game) )
 	}
 }
 
-class MapRow extends Element {
-	constructor() {
-		super('tr')
-		this.children = [
-			new MapCell(),
-			new MapCell(),
-			new MapCell(),
-			new MapCell(),
-			new MapCell()
-		]
+class Map extends GameElement {
+	constructor(game) {
+		super({selector: 'table.map', game: game})
+		this.data = {}
+		for (let i = 0; i < this.game.roomSize; ++i) {
+			this.addChild( new MapRow(game) )
+		}
+		this.addRoom(game.position)
+	}
+	addRoom(pos) {
+		if (typeof this.data[pos.x] === 'undefined')
+			this.data[pos.x] = {}
+		this.data[pos.x][pos.y] = new Room(this.game)
 	}
 }
 
-class MapCell extends Element {
-	constructor() {
-		super('td')
+class MapRow extends GameElement {
+	constructor(game) {
+		super({selector: 'tr.row', game: game})
+		for (let i = 0; i < this.game.roomSize; ++i) {
+			this.addChild( new MapTile(this.game) )
+		}
 	}
 }
 
-class Footer extends Element {
-	constructor() {
-		super('footer')
+class MapTile extends GameElement {
+	constructor(game) {
+		super({selector: 'td.tile', game: game})
+	}
+}
+
+class Footer extends GameElement {
+	constructor(game) {
+		super({selector: 'footer', game: game})
+	}
+}
+
+class Room extends GameComponent {
+	constructor(game) {
+		super(game)
+		this.tiles = new Array(this.game.roomSize).fill(null).map( column => {
+			return new Array(this.game.roomSize).fill( new Tile(game) )
+		})
+	}
+}
+
+class Tile extends GameComponent {
+	constructor(game) {
+		super(game)
 	}
 }

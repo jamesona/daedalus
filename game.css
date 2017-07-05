@@ -1,73 +1,95 @@
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: none;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+html, body {
+	height: 100%;
+	width: 100%;
 }
 body {
-  background-color: #000;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+	background-color: #000;
+	overflow: hidden;
 }
-header, footer, aside {
-  flex-grow: 1;
-  background-color: #999;
-  outline-width: 3px;
-  outline-style: inset;
-  border-style: inset;
+header, footer, main {
+	width: 100%;
 }
-header, aside:first-child {
-  border-color: #bbb;
-  outline-color: #ccc;
-}
-footer, aside:last-child {
-  border-color: #ccc;
-  outline-color: #bbb;
-}
-header {
-  border-bottom: 3px;
-  margin-bottom: 3px;
-  margin-top: -3px;
-}
-aside:first-child {
-  border-right: 3px;
-  margin-right: 3px;
-  margin-left: -3px;
-}
-footer {
-  border-top: 3px;
-  margin-top: 3px;
-  margin-bottom: -3px;
-}
-aside:last-child {
-  border-left: 3px;
-  margin-left: 3px;
-  margin-right: -3px;
+header, footer {
+	height: 10vh;
 }
 main {
-  display: flex;
-  flex-grow: 8;
-  flex-direction: row;
+	height: 80vh;
 }
-main div {
-  position: relative;
+aside, view {
+	height: 100%;
 }
-main table {
-  position: absolute;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  border-collapse: collapse;
-  height: 100%;
-  width: 100%;
+view {
+	width: 80vh
 }
-tr {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: row;
+aside {
+	width: calc(50% - 40vh)
 }
-td {
-  flex-grow: 1;
-  background-image: url('./floor.png')
+header, footer, aside {
+	background-color: #999;
+	outline-width: 3px;
+	outline-style: inset;
+	border-style: inset;
+}
+header, aside:first-child {
+	border-color: #bbb;
+	outline-color: #ccc;
+}
+footer, aside:last-child {
+	border-color: #ccc;
+	outline-color: #bbb;
+}
+header {
+	border-bottom: 3px;
+	margin-bottom: 3px;
+	margin-top: -3px;
+}
+aside:first-child {
+	border-right: 3px;
+	margin-right: 3px;
+	margin-left: -3px;
+}
+footer {
+	border-top: 3px;
+	margin-top: 3px;
+	margin-bottom: -3px;
+}
+aside:last-child {
+	border-left: 3px;
+	margin-left: 3px;
+	margin-right: -3px;
+}
+main {
+	display: flex;
+	flex-grow: 8;
+	flex-direction: row;
+}
+main .map-wrapper {
+	position: relative;
+	flex-grow: 1;
+}
+main .map {
+	position: absolute;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	border-collapse: collapse;
+	height: 100%;
+	width: 100%;
+}
+.map .row {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: row;
+}
+.map .tile {
+	flex-grow: 1;
+}
+.map .tile::after {
+	content: attr(data-type);
 }
