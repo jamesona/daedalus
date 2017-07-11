@@ -140,11 +140,30 @@ class Map extends GameElement {
 			this.addChild( new MapRow(game) )
 		}
 		this.addRoom(game.position)
+		this.drawRoom(this.loadRoom(game.position))
 	}
 	addRoom(pos) {
 		if (typeof this.data[pos.x] === 'undefined')
-			this.data[pos.x] = {}
-		this.data[pos.x][pos.y] = new Room(this.game)
+			this.data[pos.y] = {}
+		this.data[pos.y][pos.x] = new Room(this.game)
+	}
+	loadRoom(pos) {
+		let room
+		try {
+			room = this.data[pos.y][pos.x]
+		} catch(e) {
+			console.log(e)
+		}
+		return room
+	}
+	drawRoom(room) {
+		let rows = this.children
+		rows.forEach((row, i) => {
+			let tiles = row.children
+			tiles.forEach((tile, j) => {
+				tile.applyData(room.tiles[i][j])
+			})
+		})
 	}
 }
 
@@ -160,6 +179,12 @@ class MapRow extends GameElement {
 class MapTile extends GameElement {
 	constructor(game) {
 		super({selector: 'td.tile', game: game})
+	}
+	applyData(data) {
+		Object.keys(data).forEach(key => {
+			if (data.hasOwnProperty(key))
+				this.element.setAttribute('data-' + key, data[key])
+		})
 	}
 }
 
@@ -181,5 +206,6 @@ class Room extends GameComponent {
 class Tile extends GameComponent {
 	constructor(game) {
 		super(game)
+		this.type = 'floor'
 	}
 }

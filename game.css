@@ -89,7 +89,18 @@ main .map {
 }
 .map .tile {
 	flex-grow: 1;
+	position: relative;
 }
 .map .tile::after {
 	content: attr(data-type);
+	position: absolute;
+	display: block;
+	color: white;
+	text-align: center;
+	box-shadow: inset 0 0 10px white;
+	width: 100%;
+	height: 100%;
+	vertical-align: middle;
+	line-height: 3;
+	border: 1px solid gray;
 }
