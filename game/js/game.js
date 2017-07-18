@@ -68,6 +68,12 @@ class GameElement extends GameComponent {
 				if (all) child.appendChildren(true)
 			})
 	}
+	applyData(data) {
+		Object.keys(data).forEach(key => {
+			if (data.hasOwnProperty(key))
+				this.element.setAttribute('data-' + key, data[key])
+		})
+	}
 }
 
 class Selector {
@@ -207,12 +213,6 @@ class MapRow extends GameElement {
 class MapTile extends GameElement {
 	constructor(game) {
 		super({selector: 'td.tile', game: game})
-	}
-	applyData(data) {
-		Object.keys(data).forEach(key => {
-			if (data.hasOwnProperty(key))
-				this.element.setAttribute('data-' + key, data[key])
-		})
 	}
 }
 
@@ -401,5 +401,7 @@ class Player extends Mobile {
 	constructor(game) {
 		super(game)
 		this.element.classList.add('player')
+		this.sprite = 0
+		this.applyData(this)
 	}
 }
