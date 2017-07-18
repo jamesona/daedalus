@@ -14,7 +14,8 @@ body {
   body header, body footer, body main {
     width: 100%; }
   body header, body footer, body aside {
-    background: #888; }
+    background: #ccc;
+    border: 3px inset; }
   body header, body footer {
     height: 10vh; }
   body main {
