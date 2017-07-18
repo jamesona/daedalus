@@ -134,3 +134,24 @@ main .map {
 .map .tile[data-type='wall'][data-subtype='bottom-door-2'] {
 	background-position: calc(100% / 3 * 0) calc(100% / 3 * 2);
 }
+.map .tile[data-type='wall'][data-subtype='0'] {
+	background-position: calc(100% / 3 * 0) calc(100% / 3 * 0);
+}
+.map .tile[data-type='wall'][data-subtype='1'] {
+	background-position: calc(100% / 3 * 1) calc(100% / 3 * 0);
+}
+.map .tile[data-type='wall'][data-subtype='2'] {
+	background-position: calc(100% / 3 * 2) calc(100% / 3 * 0);
+}
+.map .tile[data-type='wall'][data-subtype='3'] {
+	background-position: calc(100% / 3 * 3) calc(100% / 3 * 0);
+}
+.map .tile[data-type='wall'][data-subtype='4'] {
+	background-position: calc(100% / 3 * 0) calc(100% / 3 * 1);
+}
+.map .tile[data-type='wall'][data-subtype='5'] {
+	background-position: calc(100% / 3 * 1) calc(100% / 3 * 1);
+}
+.map .tile[data-type='wall'][data-subtype='6'] {
+	background-position: calc(100% / 3 * 2) calc(100% / 3 * 1);
+}
