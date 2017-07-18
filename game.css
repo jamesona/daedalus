@@ -88,6 +88,7 @@ main .map {
 	flex-direction: row;
 }
 .map .tile {
+	display: flex;
 	flex-grow: 1;
 	position: relative;
 	background-image: url('./tileset.png');
@@ -154,4 +155,9 @@ main .map {
 }
 .map .tile[data-type='wall'][data-subtype='6'] {
 	background-position: calc(100% / 3 * 2) calc(100% / 3 * 1);
+}
+.mobile.player {
+	background-image: url('./character_sprite.png');
+	background-position: 0 0;
+	flex-grow: 1;
 }
