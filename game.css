@@ -92,7 +92,7 @@ main .map {
 	position: relative;
 	background-image: url('./tileset.png');
 	background-position: 0 0;
-	background-size: 400%;
+	background-size: 403%;
 	image-rendering: pixelated;
 }
 .map .tile[data-type='floor'], .map .tile[data-type='door'] {
@@ -134,16 +134,3 @@ main .map {
 .map .tile[data-type='wall'][data-subtype='bottom-door-2'] {
 	background-position: calc(100% / 3 * 0) calc(100% / 3 * 2);
 }
-/*.map .tile::after {
-	content: attr(data-type);
-	position: absolute;
-	display: block;
-	color: white;
-	text-align: center;
-	box-shadow: inset 0 0 10px white;
-	width: 100%;
-	height: 100%;
-	vertical-align: middle;
-	line-height: 3;
-	border: 1px solid gray;
-}*/
