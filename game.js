@@ -9,6 +9,10 @@ Object.prototype.toArray = function() {
 	return Object.keys(this).map( key => this[key] )
 }
 
+function getRandomInt(min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 class GameComponent {
 	constructor(game) {
 		if (game) this.game = game
@@ -143,16 +147,16 @@ class Map extends GameElement {
 		this.drawRoom(this.loadRoom(game.position))
 	}
 	addRoom(pos) {
-		if (typeof this.data[pos.x] === 'undefined')
+		if (typeof this.data[pos.y] === 'undefined')
 			this.data[pos.y] = {}
-		this.data[pos.y][pos.x] = new Room(this.game)
+		this.data[pos.y][pos.x] = new Room(this.game, pos)
 	}
 	loadRoom(pos) {
 		let room
 		try {
 			room = this.data[pos.y][pos.x]
 		} catch(e) {
-			console.log(e)
+			return null
 		}
 		return room
 	}
@@ -195,11 +199,151 @@ class Footer extends GameElement {
 }
 
 class Room extends GameComponent {
-	constructor(game) {
+	constructor(game, location) {
 		super(game)
-		this.tiles = new Array(this.game.roomSize).fill(null).map( column => {
-			return new Array(this.game.roomSize).fill( new Tile(game) )
+		this.location = location
+
+		let size = game.roomSize
+		this.tiles = new Array(size).fill(null).map(row => {
+			return new Array(size).fill(null).map(tile => new Tile())
 		})
+
+		this.generate()
+	}
+
+	getRow(n) {
+		if (this.tiles[n])
+			return this.tiles[n]
+		return null
+	}
+
+	getCol(n) {
+		if (this.tiles[0][n])
+			return this.tiles.map(row => row[n])
+		return null
+	}
+
+	generate() {
+		this.setWalls()
+		this.addDoors()
+	}
+
+	setWalls() {
+		let first = 0
+		let last = this.game.roomSize - 1
+		for (let row = first; row <= last; ++row) {
+			for (let column = first; column <= last; ++column) {
+				let tile = this.tiles[row][column]
+				if (row == first || row == last || column == first || column == last) {
+					tile.type = 'wall'
+					if (row == first || row == last) {
+						if (row == first) {
+							tile.subtype = getRandomInt(0,6)
+							if (column == first) tile.subtype = 'top-left'
+							if (column == last) tile.subtype = 'top-right'
+						}
+						if (row == last) {
+							tile.subtype = getRandomInt(0,6)
+							if (column == first) tile.subtype = 'bottom-left'
+							if (column == last) tile.subtype = 'bottom-right'
+						}
+					} else {
+						if (column == first) tile.subtype = 'left'
+						if (column == last) tile.subtype = 'right'
+					}
+				}
+			}
+		}
+		this.walls = {
+			north: this.getRow(first),
+			east: this.getCol(last),
+			south: this.getRow(last),
+			west: this.getCol(first)
+		}
+	}
+
+	addDoors() {
+		let neighbors = this.getAdjacentDoors()
+		let directions = Object.keys(neighbors)
+		let doorCount = 0
+		let random = () => {
+			// this translates pretty closely to a 25% chance reduction per existing door
+			// just with a lot with more variance on a case-by-case basis
+			return !!Math.floor(Math.round(Math.random() * 100) / (23 * doorCount))
+		}
+		directions.forEach((direction, i, doors) => {
+			if (neighbors[direction] === true) {
+				++doorCount
+				setDoor(direction)
+			}
+		})
+		directions.forEach(direction => {
+			if (neighbors[direction] === null && random()) {
+				this.setDoor(direction)
+				++doorCount
+			}
+		})
+	}
+
+	getAdjacentDoors() {
+		let doors = {}
+		let x = this.location.x
+		let y = this.location.y
+		let directions = ['north', 'east', 'south', 'west']
+
+		directions.forEach(direction => {
+			doors[direction] = null
+			if (this.game.map) {
+				let opposite
+				let adjacent
+				switch (direction) {
+					case 'north':
+					adjacent = this.game.map.loadRoom({x: x, y: y + 1})
+					opposite = 'south'
+					break
+
+					case 'east':
+					adjacent = this.game.map.loadRoom({x: x + 1, y: y})
+					opposite = 'west'
+					break
+
+					case 'south':
+					adjacent = this.game.map.loadRoom({x: x, y: y - 1})
+					opposite = 'north'
+					break
+
+					case 'west':
+					adjacent = this.game.map.loadRoom({x: x - 1, y: y})
+					opposite = 'east'
+					break
+				}
+				doors[direction] = adjacent[direction].hasDoor(opposite)
+			}
+
+		})
+		return doors
+	}
+
+	hasDoor(direction) {
+		let wall = this.walls[direction]
+		let midpoint = this.getMidpoint()
+		return wall[midpoint].type == 'door'
+	}
+
+	setDoor(direction) {
+		let wall = this.walls[direction]
+		let midpoint = this.getMidpoint()
+		wall[midpoint].type = 'door'
+		if (direction == 'south') {
+			wall[midpoint - 1].subtype = 'bottom'
+			wall[midpoint + 1].subtype = 'bottom'
+		}
+		wall[midpoint - 1].subtype += '-door-1'
+		wall[midpoint + 1].subtype += '-door-2'
+	}
+
+	getMidpoint() {
+		return Math.floor(this.game.roomSize / 2)
 	}
 }
 

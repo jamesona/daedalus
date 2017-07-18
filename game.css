@@ -90,8 +90,51 @@ main .map {
 .map .tile {
 	flex-grow: 1;
 	position: relative;
+	background-image: url('./tileset.png');
+	background-position: 0 0;
+	background-size: 400%;
+	image-rendering: pixelated;
 }
-.map .tile::after {
+.map .tile[data-type='floor'], .map .tile[data-type='door'] {
+	background-position: 100% 100%;
+}
+.map .tile[data-type='wall'][data-subtype='top-left'] {
+	background-position: calc(100% / 3 * 2) calc(100% / 3 * 2);
+}
+.map .tile[data-type='wall'][data-subtype='top-right'] {
+	background-position: calc(100% / 3 * 3) calc(100% / 3 * 2);
+}
+.map .tile[data-type='wall'][data-subtype='bottom-left'] {
+	background-position: calc(100% / 3 * 1) calc(100% / 3 * 3);
+}
+.map .tile[data-type='wall'][data-subtype='bottom-right'] {
+	background-position: calc(100% / 3 * 2) calc(100% / 3 * 3);
+}
+.map .tile[data-type='wall'][data-subtype='left'] {
+	background-position: calc(100% / 3 * 2) calc(100% / 3 * 2);
+}
+.map .tile[data-type='wall'][data-subtype='right'] {
+	background-position: calc(100% / 3 * 3) calc(100% / 3 * 2);
+}
+.map .tile[data-type='wall'][data-subtype='left-door-1'] {
+	background-position: calc(100% / 3 * 0) calc(100% / 3 * 0);
+}
+.map .tile[data-type='wall'][data-subtype='left-door-2'] {
+	background-position: calc(100% / 3 * 3) calc(100% / 3 * 1);
+}
+.map .tile[data-type='wall'][data-subtype='right-door-1'] {
+	background-position: calc(100% / 3 * 0) calc(100% / 3 * 0);
+}
+.map .tile[data-type='wall'][data-subtype='right-door-2'] {
+	background-position: calc(100% / 3 * 0) calc(100% / 3 * 2);
+}
+.map .tile[data-type='wall'][data-subtype='bottom-door-1'] {
+	background-position: calc(100% / 3 * 3) calc(100% / 3 * 1);
+}
+.map .tile[data-type='wall'][data-subtype='bottom-door-2'] {
+	background-position: calc(100% / 3 * 0) calc(100% / 3 * 2);
+}
+/*.map .tile::after {
 	content: attr(data-type);
 	position: absolute;
 	display: block;
@@ -103,4 +146,4 @@ main .map {
 	vertical-align: middle;
 	line-height: 3;
 	border: 1px solid gray;
-}
+}*/
