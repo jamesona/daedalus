@@ -238,12 +238,12 @@ class Room extends GameComponent {
 					tile.type = 'wall'
 					if (row == first || row == last) {
 						if (row == first) {
-							tile.subtype = getRandomInt(0,6)
+							tile.subtype = (Math.round(Math.random())) ? 0 : getRandomInt(1,6)
 							if (column == first) tile.subtype = 'top-left'
 							if (column == last) tile.subtype = 'top-right'
 						}
 						if (row == last) {
-							tile.subtype = getRandomInt(0,6)
+							tile.subtype = (Math.round(Math.random())) ? 0 : getRandomInt(1,6)
 							if (column == first) tile.subtype = 'bottom-left'
 							if (column == last) tile.subtype = 'bottom-right'
 						}
