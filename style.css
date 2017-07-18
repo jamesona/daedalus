@@ -61,7 +61,7 @@ main {
 	font-size: 1.5rem;
 }
 
-main p, .definition {
+main p, main ul, main h4, .definition {
 	margin: 1rem 8%;
 	line-height: 1.2;
 }

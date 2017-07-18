@@ -91,7 +91,7 @@ main .map {
 	display: flex;
 	flex-grow: 1;
 	position: relative;
-	background-image: url('./tileset.png');
+	background-image: url('../img/tileset.png');
 	background-position: 0 0;
 	background-size: 403%;
 	image-rendering: pixelated;
@@ -157,7 +157,7 @@ main .map {
 	background-position: calc(100% / 3 * 2) calc(100% / 3 * 1);
 }
 .mobile.player {
-	background-image: url('./character_sprite.png');
+	background-image: url('../img/character_sprite.png');
 	background-position: 0 0;
 	flex-grow: 1;
 }

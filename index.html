@@ -43,8 +43,72 @@
 			This 5x5 grid represents one room of infinitely many, and each tile represents a floor, wall,
 			or door. Additionally, any floor tiles also hold data about what, if anything, is occupying
 			that space: you, a monster, an item, etc. Each room contains 2-4 doors, that lead to other rooms.
-			<a href="./game.html">Demo</a>
+			<a href="./game/index.html">Demo</a>
 		</p>
+		<h3>Software Design</h3>
+		<h4>Model</h4>
+		<ul>
+			<li>
+				Player: the player model
+				<ul>
+					<li>stats - current player stats</li>
+					<li>inventory - current player inventory</li>
+					<li>equipment - current player equipment</li>
+					<li>location - current place in the room</li>
+				</ul>
+			</li>
+			<li>
+				Mobiles: a collection of currently generated monsters
+				<ul>
+					<li>stats - current moster stats</li>
+					<li>drops - potential loot to drop</li>
+				</ul>
+			</li>
+			<li>
+				Map: all the data for the currently generated/explored map
+				<ul>
+					<li>
+						rooms - two dimensional arrays of cell data
+						<ul>
+							<li>
+								cells - actual data for a cell
+								<ul>
+									<li>type - floor, wall, etc.</li>
+									<li>contents - loot, creature, player, etc.</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>
+				Items: a container for all possible items and their data
+			</li>
+		</ul>
+		<h4>View</h4>
+		<ul>
+			<li>
+				header - the top portion of the page
+				<ul>
+					<li>minimap - a small map of your current location in the labyrinth</li>
+					<li>main navigation - buttons to control the game</li>
+				</ul>
+			</li>
+			<li>
+				main - the middle portion of the page
+				<ul>
+					<li>left sidebar - inventory/item data</li>
+					<li>viewport - the table containing the main view</li>
+					<li>right sidebar - equipment/misc information (creature data, etc.)</li>
+				</ul>
+			</li>
+			<li>
+				footer - the bottom portion of the page
+				<ul>
+					<li>hot-bar - a place to hold buttons for activating skills and equipment</li>
+				</ul>
+			</li>
+		</ul>
 		<h3>Sample state</h3><hr/>
 		<pre>
 		</pre>

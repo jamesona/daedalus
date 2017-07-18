@@ -1,16 +1,11 @@
 'use strict'
 
-Object.prototype.forEach = function(fn) {
-	Object.keys(this).forEach( key => {
-		fn(this[key])
-	})
-}
-Object.prototype.toArray = function() {
-	return Object.keys(this).map( key => this[key] )
-}
-
 function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getMidpoint(n) {
+	return Math.floor(n / 2)
 }
 
 class GameComponent {
@@ -191,7 +186,7 @@ class Map extends GameElement {
 		let player = this.game.player
 		let playerPos = player.position
 		if (playerPos.x === null) {
-			playerPos.x = playerPos.y = room.getMidpoint()
+			playerPos.x = playerPos.y = getMidpoint(this.game.roomSize)
 		} else {
 			player.element.parentNode.removeChild(player.element)
 		}
@@ -355,13 +350,13 @@ class Room extends GameComponent {
 
 	hasDoor(direction) {
 		let wall = this.walls[direction]
-		let midpoint = this.getMidpoint()
+		let midpoint = getMidpoint(this.game.roomSize)
 		return wall[midpoint].type == 'door'
 	}
 
 	setDoor(direction) {
 		let wall = this.walls[direction]
-		let midpoint = this.getMidpoint()
+		let midpoint = getMidpoint(this.game.roomSize)
 		wall[midpoint].type = 'door'
 		if (direction == 'south') {
 			wall[midpoint - 1].subtype = 'bottom'
@@ -369,10 +364,6 @@ class Room extends GameComponent {
 		}
 		wall[midpoint - 1].subtype += '-door-1'
 		wall[midpoint + 1].subtype += '-door-2'
-	}
-
-	getMidpoint() {
-		return Math.floor(this.game.roomSize / 2)
 	}
 }
 
