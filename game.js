@@ -31,8 +31,13 @@ class GameElement extends GameComponent {
 		else
 			element = document.createElement(selector.tag)
 		Object.defineProperty(this, 'element', {
-			get: function() {
+			get: () => {
 				return element
+			}
+		})
+		Object.defineProperty(element, 'model', {
+			get: () => {
+				return this
 			}
 		})
 
@@ -98,7 +103,15 @@ class Game extends GameElement {
 		this.header = this.addChild( new Header(this) )
 		this.main = this.addChild( new Main(this) )
 		this.footer = this.addChild( new Footer(this) )
+		this.player = new Player(this)
 		this.appendChildren(true)
+
+		// this will be called dynamically by the event stack
+		this.tick()
+	}
+
+	tick() {
+		this.map.tick()
 	}
 }
 
@@ -146,11 +159,13 @@ class Map extends GameElement {
 		this.addRoom(game.position)
 		this.drawRoom(this.loadRoom(game.position))
 	}
+
 	addRoom(pos) {
 		if (typeof this.data[pos.y] === 'undefined')
 			this.data[pos.y] = {}
 		this.data[pos.y][pos.x] = new Room(this.game, pos)
 	}
+
 	loadRoom(pos) {
 		let room
 		try {
@@ -160,6 +175,7 @@ class Map extends GameElement {
 		}
 		return room
 	}
+
 	drawRoom(room) {
 		let rows = this.children
 		rows.forEach((row, i) => {
@@ -168,6 +184,19 @@ class Map extends GameElement {
 				tile.applyData(room.tiles[i][j])
 			})
 		})
+	}
+
+	tick() {
+		let room = this.loadRoom(this.game.position)
+		let player = this.game.player
+		let playerPos = player.position
+		if (playerPos.x === null) {
+			playerPos.x = playerPos.y = room.getMidpoint()
+		} else {
+			player.element.parentNode.removeChild(player.element)
+		}
+		let playerCell = this.children[playerPos.y].children[playerPos.x]
+		playerCell.element.appendChild(player.element)
 	}
 }
 
@@ -202,7 +231,7 @@ class Room extends GameComponent {
 	constructor(game, location) {
 		super(game)
 		this.location = location
-
+		this.mobiles = []
 		let size = game.roomSize
 		this.tiles = new Array(size).fill(null).map(row => {
 			return new Array(size).fill(null).map(tile => new Tile())
@@ -351,5 +380,35 @@ class Tile extends GameComponent {
 	constructor(game) {
 		super(game)
 		this.type = 'floor'
+	}
+}
+
+class Mobile extends GameElement {
+	constructor(game) {
+		super({
+			selector: 'div.mobile',
+			game: game
+		})
+		this.stats = {
+			str: 5,
+			int: 5,
+			dex: 5,
+			per: 5,
+			sta: 5,
+			att: 5,
+			hp: 5
+		}
+		this.inventory = []
+		this.position = {
+			x: null,
+			y: null,
+		}
+	}
+}
+
+class Player extends Mobile {
+	constructor(game) {
+		super(game)
+		this.element.classList.add('player')
 	}
 }
