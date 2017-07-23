@@ -1,13 +1,5 @@
 'use strict'
 
-function getRandomInt(min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getMidpoint(n) {
-	return Math.floor(n / 2)
-}
-
 class GameComponent {
 	constructor(game) {
 		if (game) this.game = game
@@ -99,6 +91,11 @@ class Selector {
 class Game extends GameElement {
 	constructor(roomSize) {
 		super({selector: 'body'})
+		this.events = new EventEmitter(() => {
+			setTimeout(() => {
+				this.events.emit('tick')
+			}, 100)
+		})
 		this.roomSize = (roomSize) ? roomSize : 11
 		this.position = {x: 0, y: 0}
 		this.header = this.addChild( new Header(this) )
@@ -108,17 +105,15 @@ class Game extends GameElement {
 		this.appendChildren(true)
 
 		// this will be called dynamically by the event stack
-		this.tick()
-	}
-
-	tick() {
-		this.map.tick()
+		this.events.emit('tick')
 	}
 }
 
 class Header extends GameElement {
 	constructor(game) {
 		super({selector: 'header', game: game})
+
+		this.element.innerHTML = 'Click a tile to move.'
 	}
 }
 
@@ -131,9 +126,37 @@ class Main extends GameElement {
 	}
 }
 
+class Inventory extends GameElement {
+	constructor(game) {
+		super({selector: 'div.inventory', game: game})
+	}
+
+	load(source) {
+		this.children.forEach(child => {
+			this.removeChild(child)
+		})
+		for (let i = 0; i < source; i++) {
+			let slot = new InventorySlot(game)
+			slot.item = source[i]
+			slot.count = slot.item.count
+			this.addChild(slot)
+			slot.applyData()
+		}
+	}
+}
+
+class InventorySlot extends GameElement {
+	constructor(game) {
+		super({selector: 'div.slot', game: game})
+		this.item = null
+		this.count = 0
+	}
+}
+
 class LeftSidebar extends GameElement {
 	constructor(game) {
 		super({selector: 'aside.sidebar.left', game: game})
+		this.addChild(new Inventory(game))
 	}
 }
 
@@ -159,12 +182,26 @@ class Map extends GameElement {
 		}
 		this.addRoom(game.position)
 		this.drawRoom(this.loadRoom(game.position))
+		this.game.events.on('tick', () => {
+			let room = this.loadRoom(this.game.position)
+			let player = this.game.player
+			let playerPos = player.position
+			if (playerPos.x === null) {
+				playerPos.x = playerPos.y = getMidpoint(this.game.roomSize)
+			} else {
+				player.element.parentNode.removeChild(player.element)
+			}
+			let playerCell = this.children[playerPos.y].children[playerPos.x]
+			playerCell.element.appendChild(player.element)
+		})
 	}
 
 	addRoom(pos) {
 		if (typeof this.data[pos.y] === 'undefined')
 			this.data[pos.y] = {}
-		this.data[pos.y][pos.x] = new Room(this.game, pos)
+		let room = new Room(this.game, pos)
+		this.data[pos.y][pos.x] = room
+		return room
 	}
 
 	loadRoom(pos) {
@@ -183,21 +220,9 @@ class Map extends GameElement {
 			let tiles = row.children
 			tiles.forEach((tile, j) => {
 				tile.applyData(room.tiles[i][j])
+				tile.data = room.tiles[i][j]
 			})
 		})
-	}
-
-	tick() {
-		let room = this.loadRoom(this.game.position)
-		let player = this.game.player
-		let playerPos = player.position
-		if (playerPos.x === null) {
-			playerPos.x = playerPos.y = getMidpoint(this.game.roomSize)
-		} else {
-			player.element.parentNode.removeChild(player.element)
-		}
-		let playerCell = this.children[playerPos.y].children[playerPos.x]
-		playerCell.element.appendChild(player.element)
 	}
 }
 
@@ -213,6 +238,24 @@ class MapRow extends GameElement {
 class MapTile extends GameElement {
 	constructor(game) {
 		super({selector: 'td.tile', game: game})
+		this.element.onclick = this.activate.bind(this)
+	}
+
+	activate() {
+		let row = this.parent.parent.children.indexOf(this.parent)
+		let column = this.parent.children.indexOf(this)
+		switch (this.element.getAttribute('data-type')) {
+			case 'wall':
+				this.game.header.element.innerHTML = 'Can\'t move inside walls!'
+				break;
+			default:
+				this.game.header.element.innerHTML = 'Moving to row ' + row + ', column ' + column
+				this.game.player.move({y: row, x: column}, this)
+		}
+		this.game.events.once('playerMoveComplete', tile => {
+			if (tile.data.type === 'door')
+				this.game.position = tile.data.to
+		})
 	}
 }
 
@@ -357,10 +400,25 @@ class Room extends GameComponent {
 	setDoor(direction) {
 		let wall = this.walls[direction]
 		let midpoint = getMidpoint(this.game.roomSize)
-		wall[midpoint].type = 'door'
-		if (direction == 'south') {
-			wall[midpoint - 1].subtype = 'bottom'
-			wall[midpoint + 1].subtype = 'bottom'
+		let cell = wall[midpoint]
+		cell.type = 'door'
+		switch (direction) {
+			case 'north':
+				wall[midpoint - 1].subtype = 'top'
+				wall[midpoint + 1].subtype = 'top'
+				cell.to = {x: this.location.x, y: this.location.y + 1}
+				break;
+			case 'east':
+				cell.to = {x: this.location.x + 1, y: this.location.y}
+				break;
+			case 'south':
+				wall[midpoint - 1].subtype = 'bottom'
+				wall[midpoint + 1].subtype = 'bottom'
+				cell.to = {x: this.location.x, y: this.location.y - 1}
+				break;
+			case 'west':
+				cell.to = {x: this.location.x - 1, y: this.location.y}
+				break;
 		}
 		wall[midpoint - 1].subtype += '-door-1'
 		wall[midpoint + 1].subtype += '-door-2'
@@ -403,5 +461,35 @@ class Player extends Mobile {
 		this.element.classList.add('player')
 		this.sprite = 0
 		this.applyData(this)
+	}
+
+	move(pos, tile) {
+		let diff = () => {
+			return {
+				x: this.position.x - pos.x,
+				y: this.position.y - pos.y
+			}
+		}
+		if (Math.abs(diff().x) > Math.abs(diff().y)) {
+			if (pos.x > this.position.x) {
+				this.position.x++
+				console.log('moved right')
+			} else {
+				this.position.x--
+				console.log('moved left')
+			}
+		} else {
+			if (pos.y > this.position.y) {
+				this.position.y++
+				console.log('moved down')
+			} else {
+				this.position.y--
+				console.log('moved up')
+			}
+		}
+		setTimeout(() => {
+			if (this.position.x !== pos.x || this.position.y !== pos.y) this.move(pos, tile)
+			else this.game.events.emit('playerMoveComplete', tile)
+		}, 600)
 	}
 }
