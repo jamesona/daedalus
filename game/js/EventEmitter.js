@@ -2,8 +2,9 @@
 
 class EventEmitter {
 	constructor(options) {
+		let nullFn = () => {}
 		this.events = {}
-		this.after = options.after || () => {}
+		this.after = options.after || nullFn
 		this.async = options.async || true
 	}
 
@@ -38,16 +39,16 @@ class EventEmitter {
 			for (let i = 0; i < listeners.length; i++) {
 				listeners[i].apply(this, args)
 			}
-			this.after()
 		}
+		this.after()
 	}
 
-	once(event, listener) {
+	once(event, listener, i) {
 		let f = function() {
 	        this.removeListener(event, f)
 	        listener.apply(this, arguments)
 	    }
-	    this.on(event, f)
+	    this.on(event, f, i)
 	}
 
 	cascade(args, listeners, callback) {

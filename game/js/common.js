@@ -7,3 +7,11 @@ function getRandomInt(min, max) {
 function getMidpoint(n) {
 	return Math.floor(n / 2)
 }
+
+function tasker(data, tasks, callback) {
+	(function(data) {
+		let task = tasks.shift()
+		if (tasks.length > 0) task(data, () => {tasker(data, tasks, callback)})
+		else task(data, callback)
+	})(data)
+}
