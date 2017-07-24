@@ -96,6 +96,7 @@ class Game extends GameElement {
 				this.events.emit('tick')
 			}, 100)
 		})
+		this.showLoadSplash()
 		this.roomSize = (roomSize) ? roomSize : 11
 		this.position = {x: 0, y: 0}
 		this.header = this.addChild( new Header(this) )
@@ -106,6 +107,33 @@ class Game extends GameElement {
 
 		// this will be called dynamically by the event stack
 		this.events.emit('tick')
+	}
+
+	showLoadSplash() {
+		let splash = document.createElement('div')
+		let hero = document.createElement('img')
+		let text = document.createElement('h2')
+		splash.classList.add('splash')
+		hero.src = 'img/champion.gif'
+		text.innerHTML = 'Loading...'
+		splash.appendChild(hero)
+		splash.appendChild(text)
+		document.body.appendChild(splash)
+		let heroPos = -15
+		let incrementHero = () => {
+			heroPos += 1
+			hero.style.left = heroPos + 'vw'
+			if (heroPos < 100)  setTimeout(() => {
+				incrementHero()
+			}, 100)
+			else {
+				splash.classList.add('hide')
+				setTimeout(() => {
+					splash.parentNode.removeChild(splash)
+				}, 500)
+			}
+		}
+		incrementHero()
 	}
 }
 
