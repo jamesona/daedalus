@@ -21,9 +21,9 @@ body {
 	}
 	header, footer {
 		height: 10vh;
+		color: #fff;
 	}
 	header {
-		color: #fff;
 		font-size: 3rem;
 		text-align: center;
 	}
@@ -188,22 +188,22 @@ body {
 
 	.splash {
 		position: fixed;
-	    top: 0;
-	    left: 0;
-	    width: 100vw;
-	    height: 100vh;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
 		opacity: 100;
-	    background: #888c98;
-	    background: -moz-linear-gradient(top, #888c98, #888c98 47.15%, #35080e 47.15%, #000000 100%);
-	    background: -webkit-linear-gradient(top, #888c98, #888c98 47.15%, #35080e 47.15%, #000000 100%);
-	    background: linear-gradient(to bottom, #888c98, #888c98 47.15%, #35080e 47.15%, #000000 100%);
-	    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#888c98', endColorstr='#841919',GradientType=0 );
-	    z-index: 200;
+		background: #888c98;
+		background: -moz-linear-gradient(top, #888c98, #888c98 47.15%, #35080e 47.15%, #000000 100%);
+		background: -webkit-linear-gradient(top, #888c98, #888c98 47.15%, #35080e 47.15%, #000000 100%);
+		background: linear-gradient(to bottom, #888c98, #888c98 47.15%, #35080e 47.15%, #000000 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#888c98', endColorstr='#841919',GradientType=0 );
+		z-index: 200;
 
 		img {
 			height: 40%;
-		    top: 10%;
-		    position: absolute;
+			top: 10%;
+			position: absolute;
 			transition: visibility 0.5s ease;
 		}
 

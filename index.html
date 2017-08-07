@@ -3,12 +3,6 @@
 	<title>Daedalus</title>
 	<link rel="stylesheet" href="./style.css"  />
 	<script src='./state.js'></script>
-	<script>
-	function loadState() {
-		var state = JSON.parse(localStorage.getItem('gameState'))
-		document.querySelector('pre').innerHTML = JSON.stringify(state, null, '  ')
-	}
-	</script>
 </head>
 <body onload="loadState()">
 	<header>
@@ -17,6 +11,14 @@
 			<h1>Daedalus: Rogue-Like</h1>
 		</div>
 	</header>
+	<aside>
+		<form class="login">
+			<input type="text" placeholder="Username" name="userName"></input>
+			<input type="password" placeholder="Password" name="password"></input>
+			<input type="submit" />
+		</form>
+		<span class="alert"></span>
+	</aside>
 	<main>
 		<div class="definition">
 			<p>
@@ -114,4 +116,73 @@
 		</pre>
 	</main>
 </body>
+<script>
+	function loadState() {
+		var state = JSON.parse(localStorage.getItem('gameState'))
+		document.querySelector('pre').innerHTML = JSON.stringify(state, null, '  ')
+	}
+	function dismiss(ele) {
+		ele.classList.remove('visible')
+		setTimeout(()=>{
+			ele.innerHTML = ''
+			ele.classList.remove('success')
+			ele.classList.remove('fail')
+		}, 500)
+	}
+	function handleSubmit(evt) {
+		evt.preventDefault()
+		var form = evt.target
+		var alert = form.parentElement.querySelector('.alert')
+		var inputs = form.querySelectorAll('input:not([type="submit"])')
+		var body = {}
+		inputs.forEach(input => {
+			body[input.name] = input.value
+		})
+		post({
+			method: 'POST',
+			body: body,
+			url: 'http://universe.tc.uvu.edu/cs2550/assignments/PasswordCheck/check.php'
+		}).then(res => {
+			response = JSON.parse(res)
+			if (response.result === 'valid') {
+				localStorage.setItem('cs2550timestamp', response.userName + ' ' + response.timestamp)
+				alert.innerHTML = 'Logged-in!'
+				alert.classList.add('success')
+				setTimeout(() => {
+					location.assign('game/index.html')
+				}, 500)
+			} else {
+				alert.innerHTML = 'Invalid username or password!'
+				alert.classList.add('fail')
+			}
+			alert.classList.add('visible')
+			alert.onclick = evt => dismiss(alert)
+			setTimeout(()=>dismiss(alert), 5000)
+		})
+	}
+	function post(config) {
+		var XHR = new XMLHttpRequest()
+		return new Promise((resolve, reject) => {
+			XHR.onreadystatechange = function() {
+				if (this.readyState === 4) {
+					if (this.status == 200)
+						resolve(XHR.responseText)
+					else
+						reject(XHR.responseText)
+				}
+			}
+			Object.keys(config.body).forEach(key => {
+				if (config.url.indexOf('?') < 0)
+					config.url += '?'
+				else
+					config.url += '&'
+				config.url += key + '=' + config.body[key]
+			})
+			XHR.open(config.method, config.url, true)
+			XHR.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+			XHR.send()
+		})
+	}
+	document.querySelector('form').onsubmit = handleSubmit
+</script>
 </html>

@@ -290,6 +290,13 @@ class MapTile extends GameElement {
 class Footer extends GameElement {
 	constructor(game) {
 		super({selector: 'footer', game: game})
+		let session = new GameElement({selector: 'h3', game: game})
+		session.element.innerHTML = localStorage.getItem('cs2550timestamp')
+		let clear = new GameElement({selector: 'button', game: game})
+		clear.element.innerHTML = "Clear Session"
+		clear.element.onclick = () => {localStorage.removeItem('cs2550timestamp')}
+		this.addChild(session)
+		this.addChild(clear)
 	}
 }
 
