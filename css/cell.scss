@@ -8,7 +8,7 @@ td.cell {
 	image-rendering: pixelated;
 	position: relative;
 
-	&not([data-type]) {
+	&[data-type="null"] {
 		background: none;
 	}
 

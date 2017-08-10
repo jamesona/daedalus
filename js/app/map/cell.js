@@ -1,9 +1,9 @@
 'use strict'
 document.head.innerHTML += `<link rel="stylesheet" href="css/cell.css" />`
-module('app/element', (ElementFromSelector) => {
+module('app/element', (Element) => {
 	class Cell {
 		constructor() {
-			this.element = new ElementFromSelector('td.cell')
+			this.element = new Element('td.cell')
 			this.type = null
 		}
 
@@ -21,6 +21,22 @@ module('app/element', (ElementFromSelector) => {
 
 		set subtype(type) {
 			this.element.dataset.subtype = type
+		}
+
+		get loot() {
+			return this.element.dataset.loot
+		}
+
+		set loot(loot) {
+			this.element.dataset.loot = loot
+		}
+
+		get actor() {
+			return this.element.dataset.actor
+		}
+
+		set actor(actor) {
+			this.element.dataset.actor = actor
 		}
 	}
 	exports(Cell)

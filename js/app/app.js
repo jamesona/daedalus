@@ -1,7 +1,7 @@
 'use strict';
 document.head.innerHTML += `<link rel="stylesheet" href="css/app.css" />`
 module('game/game', 'app/menu', 'app/map', (Game, Menu, GameMap) => {
-	let _model
+	let game
 	class App {
 		constructor() {
 			this.element = document.createElement('app')
@@ -17,6 +17,7 @@ module('game/game', 'app/menu', 'app/map', (Game, Menu, GameMap) => {
 			})
 
 			setInterval(this.tick.bind(this, this), 100)
+			document.onkeyup = this.handleKey.bind(this)
 		}
 
 		get componentsArray() {
@@ -34,10 +35,24 @@ module('game/game', 'app/menu', 'app/map', (Game, Menu, GameMap) => {
 		handleEvent(event) {
 			switch(event.text) {
 				case 'new game':
-					console.log('new game started')
+					game = new Game({})
+					this.components.map.handleEvent({
+						text: 'load room',
+						target: game.world.rooms[0][0]
+					})
 					break
 			}
 			this.componentsArray.forEach(component => component.handleEvent(event))
+		}
+
+		handleKey(evt) {
+			switch(evt.key) {
+				case 'Escape':
+					if (game) this.components.menu.handleEvent({
+						text: 'open menu'
+					})
+					break
+			}
 		}
 	}
 	exports(App)

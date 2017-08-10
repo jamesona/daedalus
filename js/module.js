@@ -15,25 +15,28 @@ module = (function() {
 		if (typeof last === 'function')	callback = last
 		if (count === 0) callback()
 		return new Promise((resolveAll, rejectAll) => {
-			for (let i=0; i < count; i++) new Promise((resolve, reject) => {
-				let name = arguments[i]
-				if (moduleCache[name]) return resolve(moduleCache[name])
+			for (let i=0; i < count; i++) {
+				new Promise((resolve, reject) => {
+					let name = arguments[i]
+					if (moduleCache[name]) return resolve(moduleCache[name])
 
-				let fileName = 'js/' + name + '.js'
-				fetch(fileName).then(response => {
-					if (response.ok) return response.text().then(text => {
-						let code = new Function('exports', text)
-						code(resolve)
+					let fileName = 'js/' + name + '.js'
+					fetch(fileName).then(response => {
+						if (response.ok) return response.text().then(text => {
+							let code = new Function('exports', text)
+							code(resolve)
+						})
+						throw new Error('could not resolve ' + fileName)
 					})
-					throw new Error('could not resolve ' + fileName)
+				}).then(dep => {
+					dependencies[i] = dep
+					if (dependencies.filter(isDefined).length === count) callback ?
+						callback.apply(undefined, dependencies) :
+						resolveAll.apply(undefined, dependencies)
 				})
-			}).then(dep => {
-				dependencies.push(dep)
-				if (dependencies.length === count) callback ?
-				callback.apply(undefined, dependencies) :
-				resolveAll.apply(undefined, dependencies)
-			})
+			}
 		})
 	}
+	let isDefined = dep => dep !== undefined
 	return module
 })()

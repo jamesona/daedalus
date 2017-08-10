@@ -1,15 +1,16 @@
 'use strict'
 document.head.innerHTML += `<link rel="stylesheet" href="css/menu.css" />`
-module('app/element', ElementFromSelector => {
+module('app/element', Element => {
 	let events = []
 	class Menu {
 		constructor() {
-			this.element = new ElementFromSelector('menu-holder')
+			this.element = new Element('menu-holder')
 			this.menus = {
 				main: new MainMenu(events),
 				new: new NewMenu(events)
 			}
 			this.element.appendChild(this.menus.new.element)
+			this.activeMenu = this.menus.new
 		}
 		get menuArray() {
 			return Object.keys(this.menus).map(key => this.menus[key])
@@ -22,43 +23,48 @@ module('app/element', ElementFromSelector => {
 				case 'new game':
 					this.element.removeChild(this.menus.new.element)
 					this.element.appendChild(this.menus.main.element)
+					this.activeMenu = this.menus.main
+					this.handleEvent({text: 'close menu'})
 					break
 				case 'close menu':
-					event.target.element.style.display = "none"
+					this.element.style.display = 'none'
+					break
+				case 'open menu':
+					this.element.style.display = ''
 			}
 		}
 	}
 
 	class MainMenu {
 		constructor() {
-			this.element = new ElementFromSelector('menu')
+			this.element = new Element('menu')
 			this.element.innerHTML = `<h1>Daedalus</h1>`
 			this.buttons = {
-				new: new ElementFromSelector('button', {
-					onclick: () => {
-						events.push({text: 'new game', target: this})
-					},
-					innerHTML: 'New Game'
-				}),
-				save: new ElementFromSelector('button', {
-					onclick: () => {
-						events.push({text: 'save game', target: this})
-					},
-					innerHTML: 'Save'
-				}),
-				close: new ElementFromSelector('button', {
+				close: new Element('button', {
 					onclick: () => {
 						events.push({text: 'close menu', target: this})
 					},
 					innerHTML: 'Close'
 				}),
-				export: new ElementFromSelector('button', {
+				save: new Element('button', {
+					onclick: () => {
+						events.push({text: 'save game', target: this})
+					},
+					innerHTML: 'Save'
+				}),
+				new: new Element('button', {
+					onclick: () => {
+						events.push({text: 'new game', target: this})
+					},
+					innerHTML: 'New Game'
+				}),
+				export: new Element('button', {
 					onclick: () => {
 						events.push({text: 'export save', target: this})
 					},
 					innerHTML: 'Export Save'
 				}),
-				about: new ElementFromSelector('a', {
+				about: new Element('a', {
 					href: '/about.html',
 					target: '_blank',
 					innerHTML: 'About'
@@ -71,36 +77,36 @@ module('app/element', ElementFromSelector => {
 	}
 	class NewMenu {
 		constructor() {
-			this.element = new ElementFromSelector('menu')
+			this.element = new Element('menu')
 			this.element.innerHTML += `<h1>Daedalus</h1>`
 			this.buttons = {
-				new: new ElementFromSelector('button', {
+				new: new Element('button', {
 					onclick: () => {
 						events.push({text: 'new game', target: this})
 					},
 					innerHTML: 'New Game'
 				}),
-				continue: new ElementFromSelector('button', {
+				continue: new Element('button', {
 					onclick: () => {
 						events.push({text: 'load game', target: this})
 					},
 					innerHTML: 'Continue Game',
 					disabled: !localStorage.getItem('daedalus-save')
 				}),
-				import: new ElementFromSelector('button', {
+				import: new Element('button', {
 					onclick: () => {
 						events.push({text: 'import save', target: this})
 					},
 					innerHTML: 'Import Save'
 				}),
-				export: new ElementFromSelector('button', {
+				export: new Element('button', {
 					onclick: () => {
 						events.push({text: 'export save', target: this})
 					},
 					innerHTML: 'Export Save',
 					disabled: !localStorage.getItem('daedalus-save')
 				}),
-				about: new ElementFromSelector('a', {
+				about: new Element('a', {
 					href: '/about.html',
 					target: '_blank',
 					innerHTML: 'About'

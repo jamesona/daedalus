@@ -5,6 +5,7 @@ module('app/element', 'app/map/cell', (ElementFromSelector, Cell) => {
 		constructor() {
 			this.element = new ElementFromSelector('tr.row')
 			this.cells = new Array(11).fill(null).map(cell => new Cell(this))
+			this.cells.forEach(cell => this.element.appendChild(cell.element))
 		}
 	}
 	exports(Row)

@@ -9,7 +9,7 @@ td.cell {
 	position: relative;
 }
 
-td.cellnot([data-type]) {
+td.cell[data-type="null"] {
 	background: none;
 }
 
