@@ -1,0 +1,79 @@
+td.cell {
+	display: flex;
+	flex-grow: 1;
+	position: relative;
+	background-image: url("../img/tiles.png");
+	background-position: 0 0;
+	background-size: 403%;
+	image-rendering: pixelated;
+	position: relative;
+}
+
+td.cellnot([data-type]) {
+	background: none;
+}
+
+td.cell[data-type='floor'], td.cell[data-type='door'] {
+	background-position: 100% 100%;
+	box-shadow: inset 0 0 1px;
+}
+
+td.cell[data-type='floor']:hover, td.cell[data-type='door']:hover {
+	box-shadow: inset 0 0 10px #aaff0a;
+}
+
+td.cell[data-type='wall']:hover {
+	box-shadow: inset 0 0 10px #c80a0a;
+}
+
+td.cell[data-type='wall'][data-subtype='top-left'], td.cell[data-type='wall'][data-subtype='left'] {
+	background-position: calc(100% / 3 * 2) calc(100% / 3 * 2);
+}
+
+td.cell[data-type='wall'][data-subtype='top-right'], td.cell[data-type='wall'][data-subtype='right'] {
+	background-position: calc(100% / 3 * 3) calc(100% / 3 * 2);
+}
+
+td.cell[data-type='wall'][data-subtype='bottom-left'] {
+	background-position: calc(100% / 3 * 1) calc(100% / 3 * 3);
+}
+
+td.cell[data-type='wall'][data-subtype='bottom-right'] {
+	background-position: calc(100% / 3 * 2) calc(100% / 3 * 3);
+}
+
+td.cell[data-type='wall'][data-subtype='left-door-1'], td.cell[data-type='wall'][data-subtype='right-door-1'], td.cell[data-type='wall'][data-subtype='0'] {
+	background-position: calc(100% / 3 * 0) calc(100% / 3 * 0);
+}
+
+td.cell[data-type='wall'][data-subtype='left-door-2'], td.cell[data-type='wall'][data-subtype='bottom-door-1'] {
+	background-position: calc(100% / 3 * 3) calc(100% / 3 * 1);
+}
+
+td.cell[data-type='wall'][data-subtype='right-door-2'], td.cell[data-type='wall'][data-subtype='bottom-door-2'] {
+	background-position: calc(100% / 3 * 0) calc(100% / 3 * 2);
+}
+
+td.cell[data-type='wall'][data-subtype='1'] {
+	background-position: calc(100% / 3 * 1) calc(100% / 3 * 0);
+}
+
+td.cell[data-type='wall'][data-subtype='2'] {
+	background-position: calc(100% / 3 * 2) calc(100% / 3 * 0);
+}
+
+td.cell[data-type='wall'][data-subtype='3'] {
+	background-position: calc(100% / 3 * 3) calc(100% / 3 * 0);
+}
+
+td.cell[data-type='wall'][data-subtype='4'] {
+	background-position: calc(100% / 3 * 0) calc(100% / 3 * 1);
+}
+
+td.cell[data-type='wall'][data-subtype='5'] {
+	background-position: calc(100% / 3 * 1) calc(100% / 3 * 1);
+}
+
+td.cell[data-type='wall'][data-subtype='6'] {
+	background-position: calc(100% / 3 * 2) calc(100% / 3 * 1);
+}

@@ -1,4 +1,9 @@
 <html>
-	<script src="module.js"></script>
-	<script deferred src="app.js"></script>
+	<link rel="stylesheet" href="css/reset.css" />
+	<script src="js/module.js"></script>
+	<script>
+		module('app/app', (App) => {
+			app = new App()
+		})
+	</script>
 </html>

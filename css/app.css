@@ -1,0 +1,11 @@
+@import url("https://fonts.googleapis.com/css?family=Press+Start+2P");
+app {
+	display: block;
+	height: 100%;
+	width: 100%;
+	font-family: 'Press Start 2P', monospace !important;
+}
+
+app * {
+	font-family: inherit;
+}

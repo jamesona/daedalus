@@ -25,63 +25,6 @@ body {
 	margin: auto;
 }
 
-aside {
-	position: fixed;
-	right: calc(50% - 70rem);
-	top: 4.8rem;
-	display: block;
-	background: rgba(0,0,0,0.3);
-	box-shadow: 0 0 1rem black;
-	border-radius: 1rem;
-}
-
-aside form input {
-	display: block;
-	margin: 1rem 4rem;
-	border-radius: 1rem;
-	padding: 0.5rem 1rem;
-	border: 1px solid white;
-}
-
-.alert {
-	font-size: 1.5rem;
-	background: white;
-	border: 1px solid white;
-	border-radius: inherit;
-	display: block;
-	margin-top: 1rem;
-	padding: 1rem;
-	position: absolute;
-	right: -200%;
-	opacity: 0;
-	text-align: center;
-	transition: right 0.5s ease, opacity 0.3s ease;
-	width: 100%;
-	box-shadow: 0 0 1rem black;
-}
-
-.alert.success {
-	background-color: #dff0d8;
-	border-color: #d6e9c6;
-	border: 1px solid;
-	box-shadow: inset 0px 0px 5px currentColor, 0 0 1rem black;
-	color: #3c763d;
-}
-
-.alert.fail {
-	background-color: #f2dede;
-	border-color: #ebccd1;
-	border: 1px solid;
-	box-shadow: inset 0px 0px 5px currentColor, 0 0 1rem black;
-	color: #a94442;
-}
-
-.alert.visible {
-	opacity: 100;
-	right: 0;
-	transition: all 0.5s ease;
-}
-
 header {
 	background-color: #888c98;
 	border-radius: 2rem 2rem 0 0;

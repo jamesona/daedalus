@@ -19,7 +19,7 @@ module = (function() {
 				let name = arguments[i]
 				if (moduleCache[name]) return resolve(moduleCache[name])
 
-				let fileName = '/' + name + '.js'
+				let fileName = 'js/' + name + '.js'
 				fetch(fileName).then(response => {
 					if (response.ok) return response.text().then(text => {
 						let code = new Function('exports', text)

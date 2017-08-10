@@ -1,24 +1,16 @@
 <html>
 <head>
 	<title>Daedalus</title>
-	<link rel="stylesheet" href="./style.css"  />
+	<link rel="stylesheet" href="css/about.css"  />
 	<script src='./state.js'></script>
 </head>
 <body onload="loadState()">
 	<header>
-		<img src="./champion.gif" />
+		<img src="img/champion.gif" />
 		<div>
 			<h1>Daedalus: Rogue-Like</h1>
 		</div>
 	</header>
-	<aside>
-		<form class="login">
-			<input type="text" placeholder="Username" name="userName"></input>
-			<input type="password" placeholder="Password" name="password"></input>
-			<input type="submit" />
-		</form>
-		<span class="alert"></span>
-	</aside>
 	<main>
 		<div class="definition">
 			<p>
@@ -41,11 +33,10 @@
 			class, and while it is far from my first web app, it is my first attempt at a video game.
 		</p>
 		<p>
-			Daedalus is played using only the mouse, to direct your character around a 5x5 grid of tiles.
-			This 5x5 grid represents one room of infinitely many, and each tile represents a floor, wall,
+			Daedalus is played using only the mouse, to direct your character around a grid of tiles.
+			This grid represents one room of infinitely many, and each tile represents a floor, wall,
 			or door. Additionally, any floor tiles also hold data about what, if anything, is occupying
 			that space: you, a monster, an item, etc. Each room contains 2-4 doors, that lead to other rooms.
-			<a href="./game/index.html">Demo</a>
 		</p>
 		<h3>Software Design</h3>
 		<h4>Model</h4>

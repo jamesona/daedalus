@@ -1,0 +1,86 @@
+td.cell {
+	display: flex;
+	flex-grow: 1;
+	position: relative;
+	background-image: url('../img/tiles.png');
+	background-position: 0 0;
+	background-size: 403%;
+	image-rendering: pixelated;
+	position: relative;
+
+	&not([data-type]) {
+		background: none;
+	}
+
+	&[data-type='floor'], &[data-type='door'] {
+		background-position: 100% 100%;
+		box-shadow: inset 0 0 1px;
+	}
+
+	&[data-type='floor']:hover, &[data-type='door']:hover {
+		box-shadow: inset 0 0 10px rgb(170, 255, 10);
+	}
+
+	&[data-type='wall']:hover {
+		box-shadow: inset 0 0 10px rgb(200, 10, 10);
+	}
+
+	&[data-type='wall'] {
+		$matrix-0: calc(100% / 3 * 0);
+		$matrix-1: calc(100% / 3 * 1);
+		$matrix-2: calc(100% / 3 * 2);
+		$matrix-3: calc(100% / 3 * 3);
+
+		&[data-subtype='top-left'], &[data-subtype='left'] {
+			background-position: $matrix-2 $matrix-2;
+		}
+
+		&[data-subtype='top-right'], &[data-subtype='right'] {
+			background-position: $matrix-3 $matrix-2;
+		}
+
+		&[data-subtype='bottom-left'] {
+			background-position: $matrix-1 $matrix-3;
+		}
+
+		&[data-subtype='bottom-right'] {
+			background-position: $matrix-2 $matrix-3;
+		}
+
+		&[data-subtype='left-door-1'], &[data-subtype='right-door-1'], &[data-subtype='0'] {
+			background-position: $matrix-0 $matrix-0;
+		}
+
+		&[data-subtype='left-door-2'], &[data-subtype='bottom-door-1'] {
+			background-position: $matrix-3 $matrix-1;
+		}
+
+		&[data-subtype='right-door-2'], &[data-subtype='bottom-door-2'] {
+			background-position: $matrix-0 $matrix-2;
+		}
+
+		&[data-subtype='1'] {
+			background-position: $matrix-1 $matrix-0;
+		}
+
+		&[data-subtype='2'] {
+			background-position: $matrix-2 $matrix-0;
+		}
+
+		&[data-subtype='3'] {
+			background-position: $matrix-3 $matrix-0;
+		}
+
+		&[data-subtype='4'] {
+			background-position: $matrix-0 $matrix-1;
+		}
+
+		&[data-subtype='5'] {
+			background-position: $matrix-1 $matrix-1;
+		}
+
+		&[data-subtype='6'] {
+			background-position: $matrix-2 $matrix-1;
+		}
+	}
+}
