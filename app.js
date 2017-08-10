@@ -1,6 +1,6 @@
 'use strict';
 (function(){
-	require('game', (Game) => {
+	module('game', (Game) => {
 		let game = new Game()
 	})
 })()

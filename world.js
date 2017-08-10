@@ -1,9 +1,10 @@
 'use strict';
+module(() => {
+	class World {
+		constructor() {
 
-class World {
-	constructor() {
-
+		}
 	}
-}
 
-exports(World)
+	exports(World)
+})
