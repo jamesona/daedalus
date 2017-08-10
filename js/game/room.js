@@ -85,10 +85,28 @@ module('game/tile', (Tile) => {
 		return wall[midpoint].type === 'door'
 	}
 	let setWalls = function(room) {
+		let first = 0
 		directions.forEach(direction => {
 			let wall = room[direction]
-			wall.tiles.forEach(tile => {
+			let last = wall.tiles.length - 1
+			wall.tiles.forEach((tile, i) => {
 				tile.type = 'wall'
+				if (direction === 'west') {
+					if (i === first)
+						tile.subtype = 'top-left'
+					else if (i === last)
+						tile.subtype = 'bottom-left'
+					else
+						tile.subtype = 'left'
+				}
+				if (direction === 'east') {
+					if (i === first)
+						tile.subtype = 'top-right'
+					else if (i === last)
+						tile.subtype = 'bottom-right'
+					else
+						tile.subtype = 'right'
+				}
 			})
 		})
 	}
@@ -98,7 +116,7 @@ module('game/tile', (Tile) => {
 		directions.forEach(direction => {
 			let wall = room[direction]
 			if (wall.neighbor) {
-				addDoor(wall.tiles)
+				addDoor(wall.tiles, direction)
 				doorCount++
 			} else {
 				undefinedRooms.push(direction)
@@ -109,14 +127,26 @@ module('game/tile', (Tile) => {
 			let direction = undefinedRooms.splice(random, 1)
 			if (Math.random() * (4 - doorCount) > 1 || doorCount === 0) {
 				let wall = room[direction]
-				addDoor(wall.tiles)
+				addDoor(wall.tiles, direction)
 				doorCount++
 			}
 		}
 	}
-	let addDoor = function(wall) {
+	let addDoor = function(wall, direction) {
 		let midpoint = getMidpoint(wall.length)
 		wall[midpoint].type = 'door'
+		switch(direction) {
+			case 'north':
+				wall[midpoint - 1].subtype = 'top'
+				wall[midpoint + 1].subtype = 'top'
+				break
+			case 'south':
+				wall[midpoint - 1].subtype = 'bottom'
+				wall[midpoint + 1].subtype = 'bottom'
+				break
+		}
+		wall[midpoint - 1].subtype += '-door-1'
+		wall[midpoint + 1].subtype += '-door-2'
 	}
 	let getRandomInt = function(min, max) {
 		return Math.floor(Math.random() * (max - min + 1)) + min;

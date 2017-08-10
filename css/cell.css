@@ -4,8 +4,9 @@ td.cell {
 	position: relative;
 	background-image: url("../img/tiles.png");
 	background-position: 0 0;
-	background-size: 403%;
+	background-size: 400%;
 	image-rendering: pixelated;
+	image-rendering: -moz-crisp-edges;
 	position: relative;
 }
 

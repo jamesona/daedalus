@@ -21,9 +21,11 @@ module('app/element', Element => {
 		handleEvent(event) {
 			switch(event.text) {
 				case 'new game':
-					this.element.removeChild(this.menus.new.element)
-					this.element.appendChild(this.menus.main.element)
-					this.activeMenu = this.menus.main
+					if (this.activeMenu === this.menus.new) {
+						this.element.removeChild(this.menus.new.element)
+						this.element.appendChild(this.menus.main.element)
+						this.activeMenu = this.menus.main
+					}
 					this.handleEvent({text: 'close menu'})
 					break
 				case 'close menu':
