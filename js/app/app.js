@@ -41,6 +41,16 @@ module('game/game', 'app/menu', 'app/map', (Game, Menu, GameMap) => {
 						target: game.world.rooms[0][0]
 					})
 					break
+				case 'save game':
+					localStorage.setItem('daedalus-save', JSON.stringify(game))
+					break
+				case 'load game':
+					this.loadGame(localStorage.getItem('daedalus-save'))
+					break
+				case 'import save':
+					let data = prompt('Paste save data:')
+					if (data) this.loadGame(atob(data))
+					break
 			}
 			this.componentsArray.forEach(component => component.handleEvent(event))
 		}
@@ -53,6 +63,17 @@ module('game/game', 'app/menu', 'app/map', (Game, Menu, GameMap) => {
 					})
 					break
 			}
+		}
+
+		loadGame(data) {
+			game = JSON.parse(data)
+			this.components.map.handleEvent({
+				text: 'load room',
+				target: game.world.rooms[0][0]
+			})
+			this.components.menu.handleEvent({
+				text: 'new game'
+			})
 		}
 	}
 	exports(App)

@@ -3,7 +3,11 @@ module('game/tile', (Tile) => {
 	let directions = ['north','east','south','west']
 	class Room {
 		constructor(world, location) {
-			this.world = world
+			Object.defineProperty(Room, 'world', {
+				get: () => {
+					return world
+				}
+			})
 			this.location = {
 				x: location[0],
 				y: location[1]
@@ -17,11 +21,11 @@ module('game/tile', (Tile) => {
 			generateDoors(this)
 		}
 		get north() {
-			let rooms = this.world.rooms
+			let rooms = Room.world.rooms
 			let wall = getRow(this.tiles, 0)
 			let adjPos = {x: this.location.x, y: this.location.y + 1}
 			let neighbor = (rooms[adjPos.x] && rooms[adjPos.x][adjPos.y]) ?
-				this.world.rooms[adjPos.x][adjPos.y] : null
+				Room.world.rooms[adjPos.x][adjPos.y] : null
 
 			return {
 				tiles: wall,
@@ -30,11 +34,11 @@ module('game/tile', (Tile) => {
 			}
 		}
 		get east() {
-			let rooms = this.world.rooms
+			let rooms = Room.world.rooms
 			let wall = getCol(this.tiles, this.tiles.length - 1)
 			let adjPos = {x: this.location.x + 1, y: this.location.y}
 			let neighbor = (rooms[adjPos.x] && rooms[adjPos.x][adjPos.y]) ?
-				this.world.rooms[adjPos.x][adjPos.y] : null
+				Room.world.rooms[adjPos.x][adjPos.y] : null
 
 			return {
 				tiles: wall,
@@ -43,11 +47,11 @@ module('game/tile', (Tile) => {
 			}
 		}
 		get south() {
-			let rooms = this.world.rooms
+			let rooms = Room.world.rooms
 			let wall = getRow(this.tiles, this.tiles.length - 1)
 			let adjPos = {x: this.location.x, y: this.location.y - 1}
 			let neighbor = (rooms[adjPos.x] && rooms[adjPos.x][adjPos.y]) ?
-				this.world.rooms[adjPos.x][adjPos.y] : null
+				Room.world.rooms[adjPos.x][adjPos.y] : null
 
 			return {
 				tiles: wall,
@@ -56,11 +60,11 @@ module('game/tile', (Tile) => {
 			}
 		}
 		get west() {
-			let rooms = this.world.rooms
+			let rooms = Room.world.rooms
 			let wall = getCol(this.tiles, 0)
 			let adjPos = {x: this.location.x - 1, y: this.location.y}
 			let neighbor = (rooms[adjPos.x] && rooms[adjPos.x][adjPos.y]) ?
-				this.world.rooms[adjPos.x][adjPos.y] : null
+				Room.world.rooms[adjPos.x][adjPos.y] : null
 
 			return {
 				tiles: wall,

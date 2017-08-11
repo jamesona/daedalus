@@ -1,26 +1,22 @@
 'use strict';
 module('game/room', (Room) => {
-	let world = {}
 	class World {
 		constructor(options) {
+			this.rooms = {}
 			this.roomSize = options.roomSize || 11
-			world[0] = {}
-			world[0][0] = new Room(this, [0,0])
-		}
-
-		get rooms() {
-			return world
+			this.rooms[0] = {}
+			this.rooms[0][0] = new Room(this, [0,0])
 		}
 
 		getRoom(x, y) {
-			if (!world[x] || !world[x][y])
+			if (!this.rooms[x] || !this.rooms[x][y])
 				this.addRoom(x, y)
-			return world[x][y]
+			return this.rooms[x][y]
 		}
 
 		addRoom(x, y) {
-			if (!world[x]) world[x] = {}
-			world[x][y] = new Room(this, [x,y])
+			if (!this.rooms[x]) this.rooms[x] = {}
+			this.rooms[x][y] = new Room(this, [x,y])
 		}
 	}
 

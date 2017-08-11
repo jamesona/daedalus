@@ -32,7 +32,10 @@ module('app/element', Element => {
 					this.element.style.display = 'none'
 					break
 				case 'open menu':
-					this.element.style.display = ''
+					if (this.element.style.display === '')
+						this.element.style.display = 'none'
+					else
+						this.element.style.display = ''
 			}
 		}
 	}
@@ -60,10 +63,15 @@ module('app/element', Element => {
 					},
 					innerHTML: 'New Game'
 				}),
-				export: new Element('button', {
-					onclick: () => {
-						events.push({text: 'export save', target: this})
+				export: new Element('a', {
+					onclick: (evt) => {
+						debugger
+						let data = new Blob([btoa(localStorage['daedalus-save'])])
+						let url = window.URL.createObjectURL(data)
+						evt.target.href = url
+						evt.target.innerHTML = 'Open Data'
 					},
+					target: '_blank',
 					innerHTML: 'Export Save'
 				}),
 				about: new Element('a', {
@@ -101,12 +109,17 @@ module('app/element', Element => {
 					},
 					innerHTML: 'Import Save'
 				}),
-				export: new Element('button', {
-					onclick: () => {
-						events.push({text: 'export save', target: this})
+				export: new Element('a', {
+					onclick: (evt) => {
+						let data = new Blob([btoa(localStorage['daedalus-save'])])
+						let url = window.URL.createObjectURL(data)
+						evt.target.href = url
+						setTimeout(()=>{
+							evt.target.href = ''
+						}, 500)
 					},
-					innerHTML: 'Export Save',
-					disabled: !localStorage.getItem('daedalus-save')
+					target: '_blank',
+					innerHTML: 'Export Save'
 				}),
 				about: new Element('a', {
 					href: '/about.html',
