@@ -19,6 +19,7 @@ module('game/tile', (Tile) => {
 				})
 			setWalls(this)
 			generateDoors(this)
+			this.actors = []
 		}
 		get north() {
 			let rooms = Room.world.rooms

@@ -36,9 +36,11 @@ module('game/game', 'app/menu', 'app/map', (Game, Menu, GameMap) => {
 			switch(event.text) {
 				case 'new game':
 					game = new Game({})
+					let room = game.world.rooms[0][0]
+					room.actors.push(game.player)
 					this.components.map.handleEvent({
 						text: 'load room',
-						target: game.world.rooms[0][0]
+						target: room
 					})
 					break
 				case 'save game':

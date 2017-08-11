@@ -5,9 +5,7 @@ module('game/world', 'game/player', (World, Player) => {
 			this.world = new World({
 				roomSize: options.roomSize || null
 			})
-			this.actors = [new Player()]
-			this.player = this.actors[0]
-			debugger
+			this.player = new Player()
 		}
 	}
 
