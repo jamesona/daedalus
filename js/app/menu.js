@@ -65,11 +65,12 @@ module('app/element', Element => {
 				}),
 				export: new Element('a', {
 					onclick: (evt) => {
-						debugger
 						let data = new Blob([btoa(localStorage['daedalus-save'])])
 						let url = window.URL.createObjectURL(data)
 						evt.target.href = url
-						evt.target.innerHTML = 'Open Data'
+						setTimeout(()=>{
+							evt.target.href = ''
+						}, 500)
 					},
 					target: '_blank',
 					innerHTML: 'Export Save'
