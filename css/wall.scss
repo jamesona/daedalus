@@ -1,0 +1,60 @@
+td.cell {
+	&[data-type='wall'] {
+		$matrix-0: calc(100% / 3 * 0);
+		$matrix-1: calc(100% / 3 * 1);
+		$matrix-2: calc(100% / 3 * 2);
+		$matrix-3: calc(100% / 3 * 3);
+
+		&[data-subtype='top-left'], &[data-subtype='left'] {
+			background-position: $matrix-2 $matrix-2;
+		}
+
+		&[data-subtype='top-right'], &[data-subtype='right'] {
+			background-position: $matrix-3 $matrix-2;
+		}
+
+		&[data-subtype='bottom-left'] {
+			background-position: $matrix-1 $matrix-3;
+		}
+
+		&[data-subtype='bottom-right'] {
+			background-position: $matrix-2 $matrix-3;
+		}
+
+		&[data-subtype='left-door-1'], &[data-subtype='right-door-1'], &[data-subtype='0'] {
+			background-position: $matrix-0 $matrix-0;
+		}
+
+		&[data-subtype='left-door-2'], &[data-subtype='bottom-door-1'] {
+			background-position: $matrix-3 $matrix-1;
+		}
+
+		&[data-subtype='right-door-2'], &[data-subtype='bottom-door-2'] {
+			background-position: $matrix-0 $matrix-2;
+		}
+
+		&[data-subtype='1'] {
+			background-position: $matrix-1 $matrix-0;
+		}
+
+		&[data-subtype='2'] {
+			background-position: $matrix-2 $matrix-0;
+		}
+
+		&[data-subtype='3'] {
+			background-position: $matrix-3 $matrix-0;
+		}
+
+		&[data-subtype='4'] {
+			background-position: $matrix-0 $matrix-1;
+		}
+
+		&[data-subtype='5'] {
+			background-position: $matrix-1 $matrix-1;
+		}
+
+		&[data-subtype='6'] {
+			background-position: $matrix-2 $matrix-1;
+		}
+	}
+}

@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 document.head.innerHTML += `<link rel="stylesheet" href="css/app.css" />`
-module('game/game', 'app/menu', 'app/map', (Game, Menu, GameMap) => {
+module('game/game', 'app/menu', 'app/map', 'app/audio', (Game, Menu, Map, AudioController) => {
 	let game
 	class App {
 		constructor() {
@@ -9,11 +9,13 @@ module('game/game', 'app/menu', 'app/map', (Game, Menu, GameMap) => {
 
 			this.components = {
 				menu: new Menu(),
-				map: new GameMap()
+				map: new Map(),
+				audio: new AudioController()
 			}
 
 			Object.keys(this.components).forEach(key => {
-				this.element.appendChild(this.components[key].element)
+				if (this.components[key].element)
+					this.element.appendChild(this.components[key].element)
 			})
 
 			setInterval(this.tick.bind(this, this), 100)
