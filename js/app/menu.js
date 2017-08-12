@@ -75,7 +75,7 @@ module('app/element', Element => {
 					innerHTML: 'Export Save'
 				}),
 				about: new Element('a', {
-					href: '/about.html',
+					href: 'about.html',
 					target: '_blank',
 					innerHTML: 'About'
 				})
@@ -122,7 +122,7 @@ module('app/element', Element => {
 					innerHTML: 'Export Save'
 				}),
 				about: new Element('a', {
-					href: '/about.html',
+					href: 'about.html',
 					target: '_blank',
 					innerHTML: 'About'
 				})
