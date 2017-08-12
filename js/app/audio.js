@@ -20,7 +20,6 @@ module('app/element', (Element) => {
 				src: 'audio/jungle.mp3',
 				maxvol: 0.8
 			})
-			console.log(this)
 		}
 
 		handleEvent(event) {

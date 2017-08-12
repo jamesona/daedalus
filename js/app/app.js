@@ -20,6 +20,7 @@ module('game/game', 'app/menu', 'app/map', 'app/audio', (Game, Menu, Map, AudioC
 
 			setInterval(this.tick.bind(this, this), 100)
 			document.onkeyup = this.handleKey.bind(this)
+			console.log(game)
 		}
 
 		get componentsArray() {
@@ -46,10 +47,10 @@ module('game/game', 'app/menu', 'app/map', 'app/audio', (Game, Menu, Map, AudioC
 					})
 					break
 				case 'save game':
-					localStorage.setItem('daedalus-save', JSON.stringify(game))
+					this.saveGame()
 					break
 				case 'load game':
-					this.loadGame(localStorage.getItem('daedalus-save'))
+					this.loadGame()
 					break
 				case 'import save':
 					let data = prompt('Paste save data:')
@@ -69,7 +70,12 @@ module('game/game', 'app/menu', 'app/map', 'app/audio', (Game, Menu, Map, AudioC
 			}
 		}
 
+		saveGame() {
+			localStorage.setItem('daedalus-save', JSON.stringify(game))
+		}
+
 		loadGame(data) {
+			if (!data) data = localStorage.getItem('daedalus-save')
 			game = JSON.parse(data)
 			this.components.map.handleEvent({
 				text: 'load room',
