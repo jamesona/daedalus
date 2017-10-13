@@ -19,14 +19,14 @@ module('app/element', Element => {
 			return events
 		}
 		handleEvent(event) {
-			switch(event.text) {
+			switch(event.type) {
 				case 'new game':
 					if (this.activeMenu === this.menus.new) {
 						this.element.removeChild(this.menus.new.element)
 						this.element.appendChild(this.menus.main.element)
 						this.activeMenu = this.menus.main
 					}
-					this.handleEvent({text: 'close menu'})
+					this.handleEvent({type: 'close menu'})
 					break
 				case 'close menu':
 					this.element.style.display = 'none'
@@ -47,19 +47,19 @@ module('app/element', Element => {
 			this.buttons = {
 				close: new Element('button', {
 					onclick: () => {
-						events.push({text: 'close menu', target: this})
+						events.push({type: 'close menu', data: this})
 					},
 					innerHTML: 'Close'
 				}),
 				save: new Element('button', {
 					onclick: () => {
-						events.push({text: 'save game', target: this})
+						events.push({type: 'save game', data: this})
 					},
 					innerHTML: 'Save'
 				}),
 				new: new Element('button', {
 					onclick: () => {
-						events.push({text: 'new game', target: this})
+						events.push({type: 'new game', data: this})
 					},
 					innerHTML: 'New Game'
 				}),
@@ -92,20 +92,20 @@ module('app/element', Element => {
 			this.buttons = {
 				new: new Element('button', {
 					onclick: () => {
-						events.push({text: 'new game', target: this})
+						events.push({type: 'new game', data: this})
 					},
 					innerHTML: 'New Game'
 				}),
 				continue: new Element('button', {
 					onclick: () => {
-						events.push({text: 'load game', target: this})
+						events.push({type: 'load game', data: this})
 					},
 					innerHTML: 'Continue Game',
 					disabled: !localStorage.getItem('daedalus-save')
 				}),
 				import: new Element('button', {
 					onclick: () => {
-						events.push({text: 'import save', target: this})
+						events.push({type: 'import save', data: this})
 					},
 					innerHTML: 'Import Save'
 				}),

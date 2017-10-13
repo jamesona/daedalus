@@ -1,0 +1,23 @@
+{
+  "name": "daedalus",
+  "description": "A web-based roguelike",
+  "version": "0.0.0",
+  "author": "Jameson Aranda",
+  "main": "index.html",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamesona/daedalus.git"
+  },
+  "keywords": [
+    "game"
+  ],
+  "license": "GPL-3.0",
+  "scripts": {
+	  "serve": "http-server"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^0.10.0"
+  }
+}

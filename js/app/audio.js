@@ -23,7 +23,7 @@ module('app/element', (Element) => {
 		}
 
 		handleEvent(event) {
-			switch(event.text) {
+			switch(event.type) {
 				case 'new game':
 					fadeOut(this.menu, 500)
 					fadeIn(this.ambience, 500)

@@ -36,14 +36,14 @@ module('game/game', 'app/menu', 'app/map', 'app/audio', (Game, Menu, Map, AudioC
 		}
 
 		handleEvent(event) {
-			switch(event.text) {
+			switch(event.type) {
 				case 'new game':
 					game = new Game({})
 					let room = game.world.rooms[0][0]
 					room.actors.push(game.player)
 					this.components.map.handleEvent({
-						text: 'load room',
-						target: room
+						type: 'load room',
+						data: room
 					})
 					break
 				case 'save game':
@@ -64,7 +64,7 @@ module('game/game', 'app/menu', 'app/map', 'app/audio', (Game, Menu, Map, AudioC
 			switch(evt.key) {
 				case 'Escape':
 					if (game) this.components.menu.handleEvent({
-						text: 'open menu'
+						type: 'open menu'
 					})
 					break
 			}
@@ -78,11 +78,11 @@ module('game/game', 'app/menu', 'app/map', 'app/audio', (Game, Menu, Map, AudioC
 			if (!data) data = localStorage.getItem('daedalus-save')
 			game = JSON.parse(data)
 			this.components.map.handleEvent({
-				text: 'load room',
-				target: game.world.rooms[0][0]
+				type: 'load room',
+				data: game.world.rooms[0][0]
 			})
 			this.components.menu.handleEvent({
-				text: 'new game'
+				type: 'new game'
 			})
 		}
 	}

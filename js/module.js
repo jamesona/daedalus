@@ -1,8 +1,8 @@
 /** Written by Jameson Aranda, 8/9/17
-*	module accepts a list of file names to import, and returns a Promise
-*	that completes when all parameters have been loaded.
-*	If the final parameter is a function, it will be called with the loaded
-*	parameters, in their original order.
+*   module accepts a list of file names to import, and returns a Promise
+*   that completes when all parameters have been loaded.
+*   If the final parameter is a function, it will be called with the loaded
+*   parameters, in their original order.
 **/
 module = (function() {
 	let moduleCache = {}
