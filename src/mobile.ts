@@ -1,4 +1,7 @@
-import { StatName, Stats, Modifiers, Item, Ability, Creature } from './game'
+import { Item } from './item'
+import { Ability } from './ability'
+import { Creature } from './creature'
+import { StatName, Stats, Modifiers } from './stats'
 import { Location } from './world'
 
 const HP_FACTOR = 2
