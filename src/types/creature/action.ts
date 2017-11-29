@@ -1,4 +1,4 @@
-import { Entity } from '@daedalus/common'
+import { Entity } from '@daedalus/types'
 import { IsEffect } from '@daedalus/types'
 
 import { IsCreature } from './creature'

@@ -1,4 +1,4 @@
-import { OrderedPair } from '@daedalus/common'
+import { OrderedPair } from '@daedalus/types'
 
 export interface IsLocation {
 	room: OrderedPair

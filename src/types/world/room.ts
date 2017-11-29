@@ -1,4 +1,4 @@
-import { CartesianGrid } from '@daedalus/common'
+import { CartesianGrid } from '@daedalus/types'
 
 import { IsTile } from './tile'
 

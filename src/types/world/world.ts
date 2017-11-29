@@ -1,4 +1,4 @@
-import { CartesianGrid } from '@daedalus/common'
+import { CartesianGrid } from '@daedalus/types'
 
 import { IsLocation } from './location'
 import { IsRoom } from './room'

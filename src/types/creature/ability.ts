@@ -1,4 +1,4 @@
-import { Entity } from '@daedalus/common'
+import { Entity } from '@daedalus/types'
 import { HasEffects } from '@daedalus/types'
 
 export interface Ability extends Entity, HasEffects {

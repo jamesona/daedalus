@@ -1,4 +1,4 @@
-import { Entity } from '@daedalus/common'
+import { Entity } from '@daedalus/types'
 import { StatModifier } from '@daedalus/types'
 
 export interface IsItem extends Entity {
