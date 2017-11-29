@@ -1,6 +1,6 @@
 import { OrderedPair } from '@daedalus/common'
 
-export interface Location {
+export interface IsLocation {
 	room: OrderedPair
 	tile: OrderedPair
 }

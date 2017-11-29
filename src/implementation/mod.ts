@@ -1,4 +1,4 @@
-import { Operator, OperatorFunction, Modifier, StatModifier, HasStats } from '@daedalus/rules'
+import { Operator, OperatorFunction, Modifier, StatModifier, HasStats } from '@daedalus/types'
 
 const Operators: {[operator in Operator]: OperatorFunction} = {
 	'+': (a: number, b: number) => a + b,

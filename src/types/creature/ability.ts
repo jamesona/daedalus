@@ -1,5 +1,5 @@
 import { Entity } from '@daedalus/common'
-import { HasEffects } from '@daedalus/rules'
+import { HasEffects } from '@daedalus/types'
 
 export interface Ability extends Entity, HasEffects {
 	lore?: string

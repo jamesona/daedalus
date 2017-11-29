@@ -1,4 +1,4 @@
-import { HasInventory, IsItem } from '@daedalus/rules'
+import { HasInventory, IsItem } from '@daedalus/types'
 
 export function giveItem(target: HasInventory, item: IsItem): void {
 

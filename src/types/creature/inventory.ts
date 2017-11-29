@@ -1,4 +1,4 @@
-import { IsItem } from '@daedalus/rules'
+import { IsItem } from '@daedalus/types'
 
 export interface HasInventory {
 	inventory: IsItem[]

@@ -1,4 +1,4 @@
-export interface Tile {
+export interface IsTile {
 	type: string
 	sub: string
 }

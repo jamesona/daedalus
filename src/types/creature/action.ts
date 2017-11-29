@@ -1,5 +1,5 @@
 import { Entity } from '@daedalus/common'
-import { IsEffect } from '@daedalus/rules'
+import { IsEffect } from '@daedalus/types'
 
 import { IsCreature } from './creature'
 
