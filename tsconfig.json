@@ -17,6 +17,9 @@
 			"es2016",
 			"dom"
 		],
-		"paths": {}
+		"paths": {
+			"@daedalus": ["*"],
+			"@daedalus/*": ["*"]
+		}
 	}
 }
