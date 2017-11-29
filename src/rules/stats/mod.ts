@@ -11,35 +11,12 @@ export const Stats = [].concat(
 )
 
 
-type Operator = '+' | '-' | '*' | '/'
-type OperatorFunction = (a: number, b: number) => number
-const Operators: {[operator in Operator]: OperatorFunction} = {
-	'+': (a: number, b: number) => a + b,
-	'-': (a: number, b: number) => a - b,
-	'*': (a: number, b: number) => a * b,
-	'/': (a: number, b: number) => a / b
-}
+export type Operator = '+' | '-' | '*' | '/'
+
+export type OperatorFunction = (a: number, b: number) => number
 
 export type Modifier = [Operator, number]
 
 export type StatModifier = {[stat in Stat]: Modifier}
 
 export type StatModifiers = StatModifier[]
-
-export function statFromMod(mod: StatModifier) {
-	return Object.keys(mod)[0]
-}
-
-export function applyMod(value: number, mod: Modifier){
-	const operator = Operators[mod[0]]
-	const operand = mod[1]
-	return operator(value, operand)
-}
-
-export function applyMods(subject: HasStats, mods: StatModifiers) {
-	mods.forEach(mod => {
-		const stat = statFromMod(mod)
-		const before = subject[stat]
-		subject[stat] = applyMod(before, mod[stat])
-	})
-}
