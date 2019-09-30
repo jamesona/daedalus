@@ -17,6 +17,6 @@ export type OperatorFunction = (a: number, b: number) => number
 
 export type Modifier = [Operator, number]
 
-export type StatModifier = {[stat in Stat]: Modifier}
+export type StatModifier = {[stat in Stat]?: Modifier}
 
 export type StatModifiers = StatModifier[]

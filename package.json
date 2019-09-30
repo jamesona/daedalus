@@ -19,8 +19,6 @@
   "dependencies": {},
   "devDependencies": {
     "http-server": "^0.10.0",
-    "jasmine": "^2.8.0",
-    "jasmine-core": "^2.8.0",
     "typescript": "^2.5.3"
   }
 }
