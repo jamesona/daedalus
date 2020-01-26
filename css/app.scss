@@ -1,0 +1,10 @@
+app {
+	display: block;
+	height: 100%;
+	width: 100%;
+	font-family: 'Press Start 2P', monospace !important;
+
+	& * {
+		font-family: inherit;
+	}
+}

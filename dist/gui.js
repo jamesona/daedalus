@@ -95,7 +95,7 @@
 
 "use strict";
 
-document.getElementsByTagName('body')[0].innerHTML = "Hello World";
+document.body.innerHTML = "\n\t<style>\n\t\thtml, body, canvas {\n\t\t\tmargin: 0;\n\t\t\tpadding: 0;\n\t\t\twidth: 100vw;\n\t\t\theight 100vh;\n\t\t}\n\t</style>\n\t<canvas></canvas>\n";
 
 
 /***/ })

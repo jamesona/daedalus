@@ -1,0 +1,64 @@
+menu-holder {
+	background: rgba(0, 0, 0, 0.7);
+	display: block;
+	height: 100%;
+	position: fixed;
+	width: 100%;
+	z-index: 100;
+}
+
+menu-holder menu {
+	background: #666;
+	border-radius: 50px;
+	border: 10px outset #999;
+	bottom: 0;
+	color: #ccc;
+	display: block;
+	height: 500px;
+	left: 0;
+	margin: auto;
+	padding: 40px;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 500px;
+}
+
+menu-holder menu h1 {
+	border-bottom: 4px ridge;
+	border-color: inherit;
+	font-size: 4rem;
+	padding: 1rem;
+	text-align: center;
+}
+
+menu-holder menu button, menu-holder menu a {
+	border: inherit;
+	background: transparent;
+	border-radius: 15px;
+	border-style: groove;
+	border-width: 4px;
+	color: #ccc;
+	cursor: pointer;
+	display: block;
+	font-size: 2rem;
+	margin: 2rem auto;
+	padding: 10px;
+	text-align: center;
+	width: 80%;
+}
+
+menu-holder menu button:active, menu-holder menu a:active {
+	border-style: inset;
+	box-shadow: inset 4px 4px 0px rgba(0, 0, 0, 0.1);
+}
+
+menu-holder menu button:hover, menu-holder menu a:hover {
+	color: #fff;
+	border-color: #aaa;
+}
+
+menu-holder menu button[disabled], menu-holder menu a[disabled] {
+	color: #999 !important;
+	border-color: inherit !important;
+}

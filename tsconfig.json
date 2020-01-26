@@ -1,6 +1,7 @@
 {
 	"compileOnSave": false,
 	"compilerOptions": {
+		"baseUrl": "'./src/",
 		"pretty": true,
 		"newLine": "LF",
 		"strict": true,
