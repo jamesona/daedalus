@@ -1,0 +1,16 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"pretty": true,
+		"newLine": "LF",
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"skipLibCheck": true,
+		"outDir": "./dist/",
+		"sourceMap": true,
+		"noImplicitAny": true,
+		"moduleResolution": "node",
+		"target": "es5"
+	}
+}
