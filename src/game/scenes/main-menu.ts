@@ -7,11 +7,36 @@ export class MainMenu extends Renderable {
 	private defaultFontSize = config.fontScale * 100
 	private titleFontSize = this.defaultFontSize * 3
 	private items = [
-		'New Game',
-		'Continue Game',
-		'Import Save',
-		'Export Save',
-		'About'
+		{
+			text: 'New Game',
+			onSelect: () => {
+				alert('selected ' + 'New Game')
+			}
+		},
+		{
+			text: 'Continue Game',
+			onSelect: () => {
+				alert('selected ' + 'Continue Game')
+			}
+		},
+		{
+			text: 'Import Save',
+			onSelect: () => {
+				alert('selected ' + 'Import Save')
+			}
+		},
+		{
+			text: 'Export Save',
+			onSelect: () => {
+				alert('selected ' + 'Export Save')
+			}
+		},
+		{
+			text: 'About',
+			onSelect: () => {
+				alert('selected ' + 'About')
+			}
+		}
 	]
 	private activeItem: number | undefined
 
@@ -41,9 +66,21 @@ export class MainMenu extends Renderable {
 					this.activeItem !== undefined ? this.activeItem + 1 : 0
 			}
 
-			if (this.activeItem && this.activeItem < 0) this.activeItem = 0
-			if (this.activeItem && this.activeItem > this.items.length - 1)
-				this.activeItem = this.items.length - 1
+			if (this.activeItem) {
+				if (this.activeItem < 0) {
+					this.activeItem = 0
+				}
+				if (this.activeItem > this.items.length - 1) {
+					this.activeItem = this.items.length - 1
+				}
+
+				if (this.keyIsPressed('select')) {
+					this.state.keys = this.state.keys.filter(
+						(key: string) => !config.keyBindings.select.includes(key)
+					)
+					this.items[this.activeItem].onSelect()
+				}
+			}
 		}
 
 		this.drawBackground(ctx, x, y, width, height)
@@ -69,10 +106,6 @@ export class MainMenu extends Renderable {
 	) {
 		ctx.fillStyle = config.menuColor
 		ctx.fillRect(x, y, width, height)
-
-		if (this.cursorInArea(x, y, x + width, y + height)) {
-			// this.activeItem = undefined
-		}
 	}
 
 	private drawTitle(ctx: CTX, x: number, y: number) {
@@ -100,7 +133,7 @@ export class MainMenu extends Renderable {
 
 			this.drawMenuItem(
 				ctx,
-				menuItem,
+				menuItem.text,
 				x,
 				firstItemTopEdge + thisItemTopOffset,
 				width,

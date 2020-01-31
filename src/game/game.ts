@@ -14,6 +14,7 @@ class GameState {
 
 	public cursorPosition: [number, number] = [0, 0]
 	public keys: string[] = []
+	public clickEvent: MouseEvent | undefined
 }
 
 export class Game {
@@ -59,6 +60,8 @@ export class Game {
 				keys: (this.state?.keys || []).filter(stateKey => stateKey !== key)
 			}
 		})
+
+		document.addEventListener('click', (e: MouseEvent) => {})
 
 		this.onClientRectUpdate()
 	}
