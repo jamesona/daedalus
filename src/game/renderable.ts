@@ -1,3 +1,5 @@
+import { config } from '../config'
+
 type CTX = CanvasRenderingContext2D
 
 export abstract class Renderable {
@@ -23,5 +25,19 @@ export abstract class Renderable {
 
 	public getFontName(ctx: CTX) {
 		return ctx.font.split(' ').pop()
+	}
+
+	public setFontSize(
+		ctx: CanvasRenderingContext2D,
+		size: number,
+		font: string = config.fontName
+	) {
+		ctx.font = `${size * 10}% "${font}"`
+	}
+
+	public cursorInArea(x1: number, y1: number, x2: number, y2: number) {
+		const [mx, my] = this.state.cursorPosition
+		const isInArea = mx >= x1 && mx <= x2 && my >= y1 && my <= y2
+		return isInArea
 	}
 }

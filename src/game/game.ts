@@ -18,10 +18,12 @@ export class Game {
 	) as CanvasRenderingContext2D
 	private activeScene: Renderable = new MainMenu(() => this._state)
 
-	constructor(hostElement: HTMLElement, public font: string) {
+	constructor(hostElement: HTMLElement) {
 		hostElement.innerHTML = ''
 		hostElement.appendChild(this.element)
+
 		window.addEventListener('resize', () => this.onClientRectUpdate())
+
 		document.addEventListener('mousemove', (e: MouseEvent) => {
 			const { clientX, clientY } = e
 			this.state = {
@@ -29,6 +31,7 @@ export class Game {
 				cursorPosition: [clientX, clientY]
 			}
 		})
+
 		this.onClientRectUpdate()
 	}
 
