@@ -13,6 +13,7 @@ export class MainMenu extends Renderable {
 		'Export Save',
 		'About'
 	]
+	private activeItem: number | undefined
 
 	public render(ctx: CTX) {
 		const {
@@ -28,6 +29,22 @@ export class MainMenu extends Renderable {
 		const height = titleHeight + itemHeight * (this.items.length + 1)
 		const x = (clientWidth - width) / 2
 		const y = (clientHeight - height) / 2
+
+		const { keys } = this.state
+
+		if (keys && keys.length) {
+			if (this.keyIsPressed('up')) {
+				this.activeItem =
+					this.activeItem !== undefined ? this.activeItem - 1 : 0
+			} else if (this.keyIsPressed('down')) {
+				this.activeItem =
+					this.activeItem !== undefined ? this.activeItem + 1 : 0
+			}
+
+			if (this.activeItem && this.activeItem < 0) this.activeItem = 0
+			if (this.activeItem && this.activeItem > this.items.length - 1)
+				this.activeItem = this.items.length - 1
+		}
 
 		this.drawBackground(ctx, x, y, width, height)
 		this.drawTitle(ctx, clientWidth / 2, y + titleHeight * 2)
@@ -52,6 +69,10 @@ export class MainMenu extends Renderable {
 	) {
 		ctx.fillStyle = config.menuColor
 		ctx.fillRect(x, y, width, height)
+
+		if (this.cursorInArea(x, y, x + width, y + height)) {
+			// this.activeItem = undefined
+		}
 	}
 
 	private drawTitle(ctx: CTX, x: number, y: number) {
@@ -84,6 +105,7 @@ export class MainMenu extends Renderable {
 				firstItemTopEdge + thisItemTopOffset,
 				width,
 				titleHeight,
+				i,
 				margin
 			)
 		})
@@ -96,22 +118,22 @@ export class MainMenu extends Renderable {
 		y: number,
 		width: number,
 		height: number,
+		index: number,
 		margin: number = 0
 	) {
 		this.setFontSize(ctx, this.defaultFontSize)
 
-		const cursorOverItem = this.cursorInArea(
-			x + margin,
-			y,
-			x + width - margin,
-			y + height
-		)
+		if (this.cursorInArea(x + margin, y, x + width - margin, y + height)) {
+			this.activeItem = index
+		}
 
-		const bgColor = cursorOverItem
+		const isActiveItem = this.activeItem === index
+
+		const bgColor = isActiveItem
 			? config.menuItemHoverColor
 			: config.menuItemColor
 
-		const textColor = cursorOverItem
+		const textColor = isActiveItem
 			? config.menuTextHoverColor
 			: config.menuTextColor
 

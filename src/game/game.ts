@@ -4,23 +4,29 @@ import Pointer from '../assets/img/pointer.png'
 import { Renderable } from './renderable'
 import { MainMenu } from './scenes/main-menu'
 
-interface GameState {
-	cursorPosition: [number, number]
+class GameState {
+	constructor(
+		previousState: Partial<GameState> = {},
+		delta: Partial<GameState> = {}
+	) {
+		Object.assign(this, previousState, delta)
+	}
+
+	public cursorPosition: [number, number] = [0, 0]
+	public keys: string[] = []
 }
 
 export class Game {
-	private _state: GameState = {
-		cursorPosition: [0, 0]
-	}
-	private element: HTMLCanvasElement = document.createElement('canvas')
-	private renderContext = this.element.getContext(
+	private _state: GameState = new GameState()
+	private canvas: HTMLCanvasElement = document.createElement('canvas')
+	private renderContext = this.canvas.getContext(
 		'2d'
 	) as CanvasRenderingContext2D
 	private activeScene: Renderable = new MainMenu(() => this._state)
 
 	constructor(hostElement: HTMLElement) {
 		hostElement.innerHTML = ''
-		hostElement.appendChild(this.element)
+		hostElement.appendChild(this.canvas)
 
 		window.addEventListener('resize', () => this.onClientRectUpdate())
 
@@ -32,11 +38,33 @@ export class Game {
 			}
 		})
 
+		document.addEventListener('keydown', (e: KeyboardEvent) => {
+			const { key } = e
+
+			e.preventDefault()
+			e.stopImmediatePropagation()
+
+			this.state = {
+				keys: [...(this.state.keys || []), key]
+			}
+		})
+
+		document.addEventListener('keyup', (e: KeyboardEvent) => {
+			const { key } = e
+
+			e.preventDefault()
+			e.stopImmediatePropagation()
+
+			this.state = {
+				keys: (this.state?.keys || []).filter(stateKey => stateKey !== key)
+			}
+		})
+
 		this.onClientRectUpdate()
 	}
 
-	public set state(newState) {
-		this._state = newState
+	public set state(newState: Partial<GameState>) {
+		this._state = new GameState(this._state, newState)
 		this.render()
 	}
 
@@ -45,27 +73,27 @@ export class Game {
 	}
 
 	public get width() {
-		return Number(this.element.getAttribute('width'))
+		return Number(this.canvas.getAttribute('width'))
 	}
 
 	public set width(val: number) {
-		this.element.setAttribute('width', String(val))
+		this.canvas.setAttribute('width', String(val))
 	}
 
 	public get height() {
-		return Number(this.element.getAttribute('height'))
+		return Number(this.canvas.getAttribute('height'))
 	}
 
 	public set height(val: number) {
-		this.element.setAttribute('height', String(val))
+		this.canvas.setAttribute('height', String(val))
 	}
 
 	public onClientRectUpdate() {
-		const rect: DOMRect = this.element.getBoundingClientRect()
+		const rect: DOMRect = this.canvas.getBoundingClientRect()
 		this.width = rect.width
 		this.height = rect.height
-		this.element.setAttribute('width', String(rect.width))
-		this.element.setAttribute('height', String(rect.height))
+		this.canvas.setAttribute('width', String(rect.width))
+		this.canvas.setAttribute('height', String(rect.height))
 		this.render()
 	}
 
@@ -83,7 +111,7 @@ export class Game {
 	private drawCursor(ctx: CanvasRenderingContext2D) {
 		const image = new Image()
 		image.src = Pointer
-		const [mx, my] = this.state.cursorPosition
+		const [mx, my] = this.state.cursorPosition || [0, 0]
 		ctx.drawImage(image, mx - 4, my - 2)
 	}
 }

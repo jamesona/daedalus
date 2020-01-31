@@ -6,5 +6,11 @@ export const config = {
 	menuItemColor: '#555',
 	menuItemHoverColor: '#644',
 	menuTextColor: '#ccc',
-	menuTextHoverColor: '#fff'
+	menuTextHoverColor: '#fff',
+	keyBindings: {
+		up: ['ArrowUp', 'w'],
+		down: ['ArrowDown', 's'],
+		left: ['ArrowLeft', 'a'],
+		right: ['ArrowRight', 'd']
+	}
 }

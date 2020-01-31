@@ -38,6 +38,11 @@ export abstract class Renderable {
 	public cursorInArea(x1: number, y1: number, x2: number, y2: number) {
 		const [mx, my] = this.state.cursorPosition
 		const isInArea = mx >= x1 && mx <= x2 && my >= y1 && my <= y2
+
 		return isInArea
+	}
+
+	public keyIsPressed(key: keyof typeof config.keyBindings) {
+		return config.keyBindings[key].some(key => this.state.keys.includes(key))
 	}
 }
