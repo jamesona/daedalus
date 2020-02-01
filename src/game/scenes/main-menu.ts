@@ -7,13 +7,41 @@ export class MainMenu extends Renderable {
 	private defaultFontSize = config.fontScale * 100
 	private titleFontSize = this.defaultFontSize * 3
 	private items = [
-		'New Game',
-		'Continue Game',
-		'Import Save',
-		'Export Save',
-		'About'
+		{
+			text: 'New Game',
+			onSelect: () => {
+				console.log(this.items[this.activeItem as number].text)
+			}
+		},
+		{
+			text: 'Continue Game',
+			onSelect: () => {
+				console.log(this.items[this.activeItem as number].text)
+			},
+			disabled: true
+		},
+		{
+			text: 'Import Save',
+			onSelect: () => {
+				console.log(this.items[this.activeItem as number].text)
+			}
+		},
+		{
+			text: 'Export Save',
+			onSelect: () => {
+				console.log(this.items[this.activeItem as number].text)
+			}
+		},
+		{
+			text: 'About',
+			onSelect: () => {
+				console.log(this.items[this.activeItem as number].text)
+			}
+		}
 	]
 	private activeItem: number | undefined
+	private hasActivatedSinceMouseDown: boolean | undefined
+	private hasActivatedSinceKeyDown: boolean | undefined
 
 	public render(ctx: CTX) {
 		const {
@@ -34,16 +62,34 @@ export class MainMenu extends Renderable {
 
 		if (keys && keys.length) {
 			if (this.keyIsPressed('up')) {
+				this.state.cursorPosition = undefined
 				this.activeItem =
 					this.activeItem !== undefined ? this.activeItem - 1 : 0
 			} else if (this.keyIsPressed('down')) {
+				this.state.cursorPosition = undefined
 				this.activeItem =
 					this.activeItem !== undefined ? this.activeItem + 1 : 0
 			}
 
-			if (this.activeItem && this.activeItem < 0) this.activeItem = 0
-			if (this.activeItem && this.activeItem > this.items.length - 1)
-				this.activeItem = this.items.length - 1
+			if (this.isNotNullish(this.activeItem)) {
+				if (this.activeItem < 0) {
+					this.activeItem = 0
+				}
+				if (this.activeItem > this.items.length - 1) {
+					this.activeItem = this.items.length - 1
+				}
+
+				const activeItem = this.items[this.activeItem]
+
+				if (!activeItem.disabled && this.keyIsPressed('select')) {
+					if (!this.hasActivatedSinceKeyDown) {
+						this.hasActivatedSinceKeyDown = true
+						activeItem.onSelect()
+					}
+				}
+			}
+		} else {
+			this.hasActivatedSinceKeyDown = false
 		}
 
 		this.drawBackground(ctx, x, y, width, height)
@@ -52,10 +98,12 @@ export class MainMenu extends Renderable {
 	}
 
 	private getTitleDimensions(ctx: CTX) {
-		this.setFontSize(ctx, this.titleFontSize)
+		const { font } = ctx
 
+		this.setFontSize(ctx, this.titleFontSize)
 		const { width } = ctx.measureText(config.title)
 		const fontSize = (ctx.font.match(/\d+/) || [0])[0]
+		ctx.font = font
 
 		return { height: Number(fontSize), width }
 	}
@@ -71,17 +119,21 @@ export class MainMenu extends Renderable {
 		ctx.fillRect(x, y, width, height)
 
 		if (this.cursorInArea(x, y, x + width, y + height)) {
-			// this.activeItem = undefined
+			this.activeItem = undefined
 		}
 	}
 
 	private drawTitle(ctx: CTX, x: number, y: number) {
-		this.setFontSize(ctx, this.titleFontSize)
-
-		ctx.fillStyle = config.menuTextColor
-		ctx.textAlign = 'center'
-		ctx.textBaseline = 'bottom'
-		ctx.fillText(config.title, x, y)
+		this.fillText({
+			ctx,
+			x,
+			y,
+			text: config.title,
+			size: this.titleFontSize,
+			color: config.menuTextColor,
+			align: 'center',
+			baseline: 'bottom'
+		})
 	}
 
 	private drawItems(
@@ -100,7 +152,7 @@ export class MainMenu extends Renderable {
 
 			this.drawMenuItem(
 				ctx,
-				menuItem,
+				menuItem.text,
 				x,
 				firstItemTopEdge + thisItemTopOffset,
 				width,
@@ -121,24 +173,62 @@ export class MainMenu extends Renderable {
 		index: number,
 		margin: number = 0
 	) {
-		this.setFontSize(ctx, this.defaultFontSize)
+		const isDisabled = this.items[index].disabled
 
-		if (this.cursorInArea(x + margin, y, x + width - margin, y + height)) {
+		if (
+			!isDisabled &&
+			this.cursorInArea(x + margin, y, x + width - margin, y + height)
+		) {
 			this.activeItem = index
+
+			if (this.state.mouseDown) {
+				if (!this.hasActivatedSinceMouseDown) {
+					this.hasActivatedSinceMouseDown = true
+					this.items[index].onSelect()
+				}
+			} else {
+				this.hasActivatedSinceMouseDown = false
+			}
 		}
 
 		const isActiveItem = this.activeItem === index
-
-		const bgColor = isActiveItem
-			? config.menuItemHoverColor
-			: config.menuItemColor
 
 		const textColor = isActiveItem
 			? config.menuTextHoverColor
 			: config.menuTextColor
 
-		this.drawMenuItemBackground(ctx, x, y, width, height, margin, bgColor)
-		this.drawMenuItemText(ctx, x, y, width, height, margin, textColor, text)
+		this.drawMenuItemBackground(
+			ctx,
+			x,
+			y,
+			width,
+			height,
+			margin,
+			isDisabled ? config.menuItemDisabledColor : config.menuItemColor
+		)
+		if (!isDisabled && isActiveItem) {
+			this.drawMenuItemBackground(
+				ctx,
+				x,
+				y,
+				width,
+				height,
+				margin,
+				config.selectedItemColor,
+				0.4
+			)
+		}
+
+		this.drawMenuItemText(
+			ctx,
+			x,
+			y,
+			width,
+			height,
+			margin,
+			isDisabled ? config.menuTextDisabledColor : textColor,
+			text
+		)
 	}
 
 	private drawMenuItemBackground(
@@ -148,10 +238,18 @@ export class MainMenu extends Renderable {
 		width: number,
 		height: number,
 		margin: number,
-		color: string
+		color: string,
+		alpha: number = 1
 	) {
-		ctx.fillStyle = color
-		ctx.fillRect(x + margin, y, width - margin * 2, height)
+		this.fillRect({
+			ctx,
+			x: x + margin,
+			y: y,
+			width: width - margin * 2,
+			height,
+			color,
+			alpha
+		})
 	}
 
 	private drawMenuItemText(
@@ -164,8 +262,15 @@ export class MainMenu extends Renderable {
 		color: string,
 		text: string
 	) {
-		ctx.fillStyle = color
-		ctx.textBaseline = 'middle'
-		ctx.fillText(text, x + (width + margin) / 2, y + height / 2)
+		this.fillText({
+			ctx,
+			color,
+			text,
+			x: x + (width + margin) / 2,
+			y: y + height / 2,
+			size: this.defaultFontSize,
+			baseline: 'middle',
+			align: 'center'
+		})
 	}
 }

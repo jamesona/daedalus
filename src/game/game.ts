@@ -1,20 +1,9 @@
 /// <reference path='../images.d.ts'/>
 import Pointer from '../assets/img/pointer.png'
 
+import { GameState } from './game-state'
 import { Renderable } from './renderable'
 import { MainMenu } from './scenes/main-menu'
-
-class GameState {
-	constructor(
-		previousState: Partial<GameState> = {},
-		delta: Partial<GameState> = {}
-	) {
-		Object.assign(this, previousState, delta)
-	}
-
-	public cursorPosition: [number, number] = [0, 0]
-	public keys: string[] = []
-}
 
 export class Game {
 	private _state: GameState = new GameState()
@@ -50,13 +39,25 @@ export class Game {
 		})
 
 		document.addEventListener('keyup', (e: KeyboardEvent) => {
-			const { key } = e
-
 			e.preventDefault()
 			e.stopImmediatePropagation()
 
 			this.state = {
-				keys: (this.state?.keys || []).filter(stateKey => stateKey !== key)
+				keys: (this.state?.keys || []).filter(key => key !== e.key)
+			}
+		})
+
+		document.addEventListener('mousedown', () => {
+			this.state = {
+				...this.state,
+				mouseDown: true
+			}
+		})
+
+		document.addEventListener('mouseup', () => {
+			this.state = {
+				...this.state,
+				mouseDown: false
 			}
 		})
 
@@ -109,9 +110,11 @@ export class Game {
 	}
 
 	private drawCursor(ctx: CanvasRenderingContext2D) {
-		const image = new Image()
-		image.src = Pointer
-		const [mx, my] = this.state.cursorPosition || [0, 0]
-		ctx.drawImage(image, mx - 4, my - 2)
+		if (this.state.cursorPosition) {
+			const image = new Image()
+			image.src = Pointer
+			const [mx, my] = this.state.cursorPosition
+			ctx.drawImage(image, mx - 4, my - 2)
+		}
 	}
 }
