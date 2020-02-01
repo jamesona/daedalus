@@ -2,7 +2,6 @@
 	"compileOnSave": true,
 	"compilerOptions": {
 		"outDir": "./dist/",
-		"baseUrl": "./src",
 		"sourceMap": true,
 		"declaration": false,
 		"strict": true,
@@ -13,12 +12,7 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"target": "es5",
-		"typeRoots": [
-			"node_modules/@types"
-		],
-		"lib": [
-			"es2017",
-			"dom"
-		],
+		"typeRoots": ["node_modules/@types"],
+		"lib": ["es2017", "dom"]
 	}
 }

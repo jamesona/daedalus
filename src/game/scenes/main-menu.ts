@@ -1,47 +1,48 @@
 import { Renderable } from '../renderable'
 import { config } from '../../config'
+import { Dungeon } from './dungeon'
 
 type CTX = CanvasRenderingContext2D
 
 export class MainMenu extends Renderable {
-	private defaultFontSize = config.fontScale * 100
+	private defaultFontSize = config.fontScale
 	private titleFontSize = this.defaultFontSize * 3
+	private activeItem: number | undefined
+	private hasActivatedSinceMouseDown: boolean | undefined
+	private hasActivatedSinceKeyDown: boolean | undefined
 	private items = [
 		{
 			text: 'New Game',
 			onSelect: () => {
-				console.log(this.items[this.activeItem as number].text)
+				this.setActiveScene(
+					new Dungeon(
+						() => this.state,
+						newState => {
+							this.state = { ...newState }
+						},
+						(scene: Renderable) => this.setActiveScene(scene)
+					)
+				)
 			}
 		},
 		{
 			text: 'Continue Game',
-			onSelect: () => {
-				console.log(this.items[this.activeItem as number].text)
-			},
+			onSelect: () => {},
 			disabled: true
 		},
 		{
 			text: 'Import Save',
-			onSelect: () => {
-				console.log(this.items[this.activeItem as number].text)
-			}
+			onSelect: () => {}
 		},
 		{
 			text: 'Export Save',
-			onSelect: () => {
-				console.log(this.items[this.activeItem as number].text)
-			}
+			onSelect: () => {}
 		},
 		{
 			text: 'About',
-			onSelect: () => {
-				console.log(this.items[this.activeItem as number].text)
-			}
+			onSelect: () => {}
 		}
 	]
-	private activeItem: number | undefined
-	private hasActivatedSinceMouseDown: boolean | undefined
-	private hasActivatedSinceKeyDown: boolean | undefined
 
 	public render(ctx: CTX) {
 		const {

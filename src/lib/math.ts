@@ -1,4 +1,10 @@
 export class ExtendedMath {
+	public static randomInt(min: number, max: number): number {
+		min = Math.ceil(min)
+		max = Math.max(max)
+		return Math.floor(Math.random() * (max - min + 1)) + min
+	}
+
 	public static parseHex(n: string): number {
 		const decimal = parseInt(n || '0', 16)
 		return decimal

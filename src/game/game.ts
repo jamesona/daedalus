@@ -11,7 +11,15 @@ export class Game {
 	private renderContext = this.canvas.getContext(
 		'2d'
 	) as CanvasRenderingContext2D
-	private activeScene: Renderable = new MainMenu(() => this._state)
+	private activeScene: Renderable = new MainMenu(
+		() => this._state,
+		newState => {
+			this.state = { ...newState }
+		},
+		(scene: Renderable) => {
+			this.activeScene = scene
+		}
+	)
 
 	constructor(hostElement: HTMLElement) {
 		hostElement.innerHTML = ''
@@ -19,13 +27,13 @@ export class Game {
 
 		window.addEventListener('resize', () => this.onClientRectUpdate())
 
-		document.addEventListener('mousemove', (e: MouseEvent) => {
-			const { clientX, clientY } = e
-			this.state = {
-				...this.state,
-				cursorPosition: [clientX, clientY]
-			}
-		})
+		// document.addEventListener('mousemove', (e: MouseEvent) => {
+		// 	const { clientX, clientY } = e
+		// 	this.state = {
+		// 		...this.state,
+		// 		cursorPosition: [clientX, clientY]
+		// 	}
+		// })
 
 		document.addEventListener('keydown', (e: KeyboardEvent) => {
 			const { key } = e

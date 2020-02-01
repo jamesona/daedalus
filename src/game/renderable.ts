@@ -2,14 +2,21 @@ import { config } from '../config'
 import { GameState } from './game-state'
 
 type CTX = CanvasRenderingContext2D
+export type StateGetter = () => GameState
+export type StateSetter = (newState: GameState) => void
+export type ChangeScene = (scene: Renderable) => void
 
 export abstract class Renderable {
+	public state: GameState = undefined as never
+
 	constructor(
-		stateGetter: () => GameState,
-		public state: GameState = undefined as never
+		get: StateGetter,
+		set: StateSetter,
+		protected setActiveScene: ChangeScene
 	) {
 		Object.defineProperty(this, 'state', {
-			get: stateGetter
+			get,
+			set
 		})
 	}
 
@@ -32,7 +39,7 @@ export abstract class Renderable {
 	}
 
 	public getClientBoundingRect(ctx: CTX) {
-		this.getCanvas(ctx).getBoundingClientRect()
+		return this.getCanvas(ctx).getBoundingClientRect()
 	}
 
 	public getFontName(ctx: CTX) {
@@ -44,7 +51,7 @@ export abstract class Renderable {
 		size: number,
 		font: string = config.fontName
 	) {
-		ctx.font = `${size * 10}% "${font}"`
+		ctx.font = `${size}% "${font}"`
 	}
 
 	public doWithFont<T = void>({

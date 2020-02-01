@@ -1,7 +1,7 @@
 export const config = {
 	title: 'Daedalus',
 	fontName: 'Press Start 2P',
-	fontScale: 0.1,
+	fontScale: 100,
 	selectedItemColor: '#501500',
 	menuColor: '#555',
 	menuItemColor: '#444',
@@ -16,5 +16,7 @@ export const config = {
 		right: ['ArrowRight', 'd'],
 		select: ['Enter', ' '],
 		back: ['Escape', 'Backspace']
-	}
+	},
+	roomSize: [10, 10] as [number, number],
+	tileSize: 16
 }
