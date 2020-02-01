@@ -36,7 +36,7 @@ export class Tile extends Renderable {
 	}
 
 	private get textureCoords(): [number, number] {
-		return [Math.floor(this.type / 4), this.type % 4]
+		return [this.type % 4, Math.floor(this.type / 4)]
 	}
 
 	public render(ctx: CanvasRenderingContext2D) {

@@ -51,15 +51,12 @@ export class Room extends Renderable {
 
 				if (isWestWall) type = TileTypes.W_Wall
 
-				// if (isEastWall) type = TileTypes.E_Wall
-				// somehow tex 14 is getting swapped with 11,
-				// and 13 is getting swapped with 7
-				if (isEastWall) type = TileTypes.SE_Corner
+				if (isEastWall) type = TileTypes.E_Wall
 
 				if (isNorthOrSouthWall) {
 					if (isNorthWall) {
 						if (!isEastOrWestWall) {
-							type = TileTypes.Wall_1
+							type = TileTypes.Wall_4
 						}
 					}
 
@@ -67,40 +64,12 @@ export class Room extends Renderable {
 						if (!isEastOrWestWall) {
 							type = TileTypes.Wall_1
 						} else if (isWestWall) {
-							// type = TileTypes.SW_Corner
-							type = TileTypes.Door_SW
+							type = TileTypes.SW_Corner
 						} else if (isEastWall) {
-							// type = TileTypes.SE_Corner
-							type = TileTypes.E_Wall
+							type = TileTypes.SE_Corner
 						}
 					}
 				}
-
-				// if (isNorthOrSouthWall) {
-				// 	// type = TileTypes.Wall_1
-				// 	if (isNorthWall) {
-				// 		if (isWestWall) {
-				// 			type = TileTypes.W_Wall
-				// 		} else if (isEastWall) {
-				// 			type = TileTypes.E_Wall
-				// 		}
-				// 	}
-				// 	if (isSouthWall) {
-				// 		if (isWestWall) {
-				// 			type = TileTypes.SW_Corner
-				// 		} else if (isEastWall) {
-				// 			type = TileTypes.SE_Corner
-				// 		}
-				// 	}
-				// }
-				// if (isEastWall) {
-				// 	type = TileTypes.E_Wall
-				// }
-
-				// if (isWestWall) {
-				// 	console.log('West Wall is tile', TileTypes.W_Wall)
-				// 	type = TileTypes.W_Wall
-				// }
 
 				this.tiles[column][row] = new Tile(
 					() => this.state,
