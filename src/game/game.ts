@@ -5,6 +5,8 @@ import { GameState } from './game-state'
 import { Renderable } from './renderable'
 import { MainMenu } from './scenes/main-menu'
 
+let lastCursorPoll: Date
+
 export class Game {
 	private _state: GameState = new GameState()
 	private canvas: HTMLCanvasElement = document.createElement('canvas')
@@ -27,13 +29,21 @@ export class Game {
 
 		window.addEventListener('resize', () => this.onClientRectUpdate())
 
-		// document.addEventListener('mousemove', (e: MouseEvent) => {
-		// 	const { clientX, clientY } = e
-		// 	this.state = {
-		// 		...this.state,
-		// 		cursorPosition: [clientX, clientY]
-		// 	}
-		// })
+		document.addEventListener('mousemove', (e: MouseEvent) => {
+			const { clientX, clientY } = e
+
+			if (
+				!lastCursorPoll ||
+				new Date().valueOf() - lastCursorPoll.valueOf() > 1000 / 60
+			) {
+				lastCursorPoll = new Date()
+				this.state = {
+					...this.state,
+					cursorPosition: [clientX, clientY]
+				}
+			}
+			// this.drawCursor(this.renderContext, clientX, clientY)
+		})
 
 		document.addEventListener('keydown', (e: KeyboardEvent) => {
 			const { key } = e
@@ -114,15 +124,12 @@ export class Game {
 		this.renderContext.fillStyle = 'black'
 		this.renderContext.fillRect(0, 0, this.width, this.height)
 		this.activeScene.render(this.renderContext)
-		this.drawCursor(this.renderContext)
+		if (this.state.cursorPosition) this.drawCursor(...this.state.cursorPosition)
 	}
 
-	private drawCursor(ctx: CanvasRenderingContext2D) {
-		if (this.state.cursorPosition) {
-			const image = new Image()
-			image.src = Pointer
-			const [mx, my] = this.state.cursorPosition
-			ctx.drawImage(image, mx - 4, my - 2)
-		}
+	private drawCursor(x: number, y: number) {
+		const image = new Image()
+		image.src = Pointer
+		this.renderContext.drawImage(image, x - 4, y - 2)
 	}
 }
