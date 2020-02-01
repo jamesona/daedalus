@@ -7,14 +7,17 @@ export enum TileTypes {
 	Wall_2,
 	Wall_3,
 	Wall_4,
+
 	Wall_5,
 	Wall_6,
 	Wall_7,
-	NE_Corner,
-	NW_Corner,
+	Door_SW,
+
+	Door_SE,
 	Inner_Corners,
-	E_Wall,
 	W_Wall,
+	E_Wall,
+
 	Inner_Walls,
 	SW_Corner,
 	SE_Corner,
@@ -38,26 +41,23 @@ export class Tile extends Renderable {
 
 	public render(ctx: CanvasRenderingContext2D) {
 		const { width, height } = ctx.canvas.getBoundingClientRect()
-		const [x, y] = this.location
+		const [tx, ty] = this.textureCoords
+		const [sx, sy] = [tx * config.tileSize, ty * config.tileSize]
+		const sw = config.tileSize
+		const sh = config.tileSize
+
 		const renderSize = Math.min(
 			Math.floor(width / config.roomSize[0]),
 			Math.floor(height / config.roomSize[1])
 		)
+		const [dx, dy] = this.location
+		const dw = renderSize
+		const dh = renderSize
 
 		const img = new Image()
 		img.src = Tiles
 
 		ctx.imageSmoothingEnabled = false
-		ctx.drawImage(
-			img,
-			this.textureCoords[0] * config.tileSize,
-			this.textureCoords[1] * config.tileSize,
-			config.tileSize,
-			config.tileSize,
-			x,
-			y,
-			renderSize,
-			renderSize
-		)
+		ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)
 	}
 }

@@ -17,6 +17,6 @@ export const config = {
 		select: ['Enter', ' '],
 		back: ['Escape', 'Backspace']
 	},
-	roomSize: [10, 10] as [number, number],
+	roomSize: [16, 16] as [number, number],
 	tileSize: 16
 }

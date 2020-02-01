@@ -38,7 +38,70 @@ export class Room extends Renderable {
 
 		for (let column = 0; column < columns; column++) {
 			this.tiles[column] = []
+
 			for (let row = 0; row < rows; row++) {
+				const isNorthOrSouthWall = row % (rows - 1) == 0
+				const isNorthWall = row === 0
+				const isSouthWall = row === rows - 1
+				const isEastOrWestWall = column % (columns - 1) == 0
+				const isWestWall = column === 0
+				const isEastWall = column === columns - 1
+
+				let type = TileTypes.Floor
+
+				if (isWestWall) type = TileTypes.W_Wall
+
+				// if (isEastWall) type = TileTypes.E_Wall
+				// somehow tex 14 is getting swapped with 11,
+				// and 13 is getting swapped with 7
+				if (isEastWall) type = TileTypes.SE_Corner
+
+				if (isNorthOrSouthWall) {
+					if (isNorthWall) {
+						if (!isEastOrWestWall) {
+							type = TileTypes.Wall_1
+						}
+					}
+
+					if (isSouthWall) {
+						if (!isEastOrWestWall) {
+							type = TileTypes.Wall_1
+						} else if (isWestWall) {
+							// type = TileTypes.SW_Corner
+							type = TileTypes.Door_SW
+						} else if (isEastWall) {
+							// type = TileTypes.SE_Corner
+							type = TileTypes.E_Wall
+						}
+					}
+				}
+
+				// if (isNorthOrSouthWall) {
+				// 	// type = TileTypes.Wall_1
+				// 	if (isNorthWall) {
+				// 		if (isWestWall) {
+				// 			type = TileTypes.W_Wall
+				// 		} else if (isEastWall) {
+				// 			type = TileTypes.E_Wall
+				// 		}
+				// 	}
+				// 	if (isSouthWall) {
+				// 		if (isWestWall) {
+				// 			type = TileTypes.SW_Corner
+				// 		} else if (isEastWall) {
+				// 			type = TileTypes.SE_Corner
+				// 		}
+				// 	}
+				// }
+				// if (isEastWall) {
+				// 	type = TileTypes.E_Wall
+				// }
+
+				// if (isWestWall) {
+				// 	console.log('West Wall is tile', TileTypes.W_Wall)
+				// 	type = TileTypes.W_Wall
+				// }
+
 				this.tiles[column][row] = new Tile(
 					() => this.state,
 					(newState: GameState) => {
@@ -49,7 +112,7 @@ export class Room extends Renderable {
 						Math.floor(roomLeftEdge + column * renderSize),
 						Math.floor(roomTopEdge + row * renderSize)
 					],
-					TileTypes.Floor
+					type
 				)
 			}
 		}
