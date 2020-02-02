@@ -35,7 +35,7 @@ export {
 	resultMemoize,
 	DefaultProjectorFn
 } from './selector'
-export { State, StateObservable, reduceState } from './state'
+export { State, StateSubject as StateObservable, reduceState } from './state'
 export {
 	StoreRootModule,
 	StoreFeatureModule,

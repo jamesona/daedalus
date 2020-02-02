@@ -1,26 +1,23 @@
+import Pointer from '../assets/img/pointer.png'
 import { config } from '../config'
-import { GameState } from './game-state'
+import { Store } from '../lib/store'
 
 type CTX = CanvasRenderingContext2D
-export type StateGetter = () => GameState
-export type StateSetter = (newState: GameState) => void
 export type ChangeScene = (scene: Renderable) => void
 
-export abstract class Renderable {
-	public state: GameState = undefined as never
+const frameCache = new Image()
 
+export abstract class Renderable {
 	constructor(
-		get: StateGetter,
-		set: StateSetter,
+		protected store: Store<any>,
 		protected setActiveScene: ChangeScene
-	) {
-		Object.defineProperty(this, 'state', {
-			get,
-			set
-		})
-	}
+	) {}
 
 	public abstract render(ctx: CTX): void
+
+	public get state() {
+		return this.store.currentState
+	}
 
 	public isDefined<T>(value: T): value is Exclude<T, undefined> {
 		return value !== undefined
@@ -44,6 +41,26 @@ export abstract class Renderable {
 
 	public getFontName(ctx: CTX) {
 		return ctx.font.split(' ').pop()
+	}
+
+	public clear(ctx: CTX) {
+		const { width, height } = this.getClientBoundingRect(ctx)
+		this.fillRect({ ctx, x: 0, y: 0, width, height })
+	}
+
+	public saveFrame(ctx: CTX): void {
+		ctx.canvas.toBlob(blob => {
+			if (frameCache.src) {
+				URL.revokeObjectURL(frameCache.src)
+			}
+			frameCache.src = URL.createObjectURL(blob)
+		})
+	}
+
+	public loadFrame(ctx: CTX): void {
+		if (frameCache.src) {
+			ctx.drawImage(frameCache, 0, 0)
+		}
 	}
 
 	public setFontSize(
@@ -136,9 +153,15 @@ export abstract class Renderable {
 		})
 	}
 
-	public cursorInArea(x1: number, y1: number, x2: number, y2: number) {
-		if (!this.state.cursorPosition) return false
+	public drawCursor(ctx: CTX, x: number, y: number) {
+		this.loadFrame(ctx)
+		const image = new Image()
+		image.src = Pointer
+		ctx.drawImage(image, x - 4, y - 2)
+	}
 
+	public cursorInArea(x1: number, y1: number, x2: number, y2: number) {
+		if (!this.state?.cursorPosition) return false
 		const [mx, my] = this.state.cursorPosition
 		const isInArea = mx >= x1 && mx <= x2 && my >= y1 && my <= y2
 
@@ -146,8 +169,10 @@ export abstract class Renderable {
 	}
 
 	public keyIsPressed(key: keyof typeof config.keyBindings) {
-		return config.keyBindings[key].some(boundKey =>
-			this.state.keys.includes(boundKey)
+		return config.keyBindings[key].some(
+			boundKey =>
+				// this.store.keys.includes(boundKey)
+				!!boundKey
 		)
 	}
 }
@@ -179,10 +204,10 @@ export interface FillTextParams extends FillParams {
 	text: string
 }
 
-export interface CtxFunctionWrappper<T> {
+export interface CtxFunctionWrapper<T> {
 	ctx: CTX
 	fn: (ctx: CTX) => T
 }
 
-export type DoWithFontParams<T> = FontParams & CtxFunctionWrappper<T>
-export type DoWithColorParams<T> = ColorParams & CtxFunctionWrappper<T>
+export type DoWithFontParams<T> = FontParams & CtxFunctionWrapper<T>
+export type DoWithColorParams<T> = ColorParams & CtxFunctionWrapper<T>

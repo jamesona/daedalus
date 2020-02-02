@@ -1,14 +1,13 @@
-import { Renderable, StateGetter, ChangeScene, StateSetter } from './renderable'
 import { config } from '../config'
+import { Store } from '../lib/store'
+import { Renderable, ChangeScene } from './renderable'
 import { Tile, TileTypes } from './tile'
-import { GameState } from './game-state'
 
 export class Room extends Renderable {
 	private tiles: Tile[][] | undefined
 
 	constructor(
-		get: StateGetter,
-		set: StateSetter,
+		store: Store<any>,
 		setActiveScene: ChangeScene,
 		private requiredDoors: [boolean, boolean, boolean, boolean] = [
 			false,
@@ -17,7 +16,7 @@ export class Room extends Renderable {
 			false
 		]
 	) {
-		super(get, set, setActiveScene)
+		super(store, setActiveScene)
 	}
 	public generate(ctx: CanvasRenderingContext2D) {
 		console.log(this.requiredDoors)
@@ -72,10 +71,7 @@ export class Room extends Renderable {
 				}
 
 				this.tiles[column][row] = new Tile(
-					() => this.state,
-					(newState: GameState) => {
-						this.state = newState
-					},
+					this.store,
 					(scene: Renderable) => this.setActiveScene(scene),
 					[
 						Math.floor(roomLeftEdge + column * renderSize),

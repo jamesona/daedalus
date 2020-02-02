@@ -18,7 +18,7 @@ export abstract class ReducerObservable extends Observable<
 	ActionReducer<any, any>
 > {}
 export abstract class ReducerManagerDispatcher extends ActionsSubject {}
-export const UPDATE = '@ngrx/store/update-reducers' as '@ngrx/store/update-reducers'
+export const UPDATE = 'update-reducers' as 'update-reducers'
 
 export class ReducerManager extends BehaviorSubject<ActionReducer<any, any>> {
 	constructor(

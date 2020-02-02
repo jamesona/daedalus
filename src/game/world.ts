@@ -1,6 +1,5 @@
 import { Room } from './room'
 import { Renderable } from './renderable'
-import { GameState } from './game-state'
 
 export class World extends Renderable {
 	private map: Room[][] = [[]]
@@ -19,12 +18,8 @@ export class World extends Renderable {
 		if (!Array.isArray(this.map[x])) {
 			this.map[x] = []
 		}
-		this.map[x][y] = new Room(
-			() => this.state,
-			(newState: GameState) => {
-				this.state = newState
-			},
-			(scene: Renderable) => this.setActiveScene(scene)
+		this.map[x][y] = new Room(this.store, (scene: Renderable) =>
+			this.setActiveScene(scene)
 		)
 		return this.map[x][y]
 	}

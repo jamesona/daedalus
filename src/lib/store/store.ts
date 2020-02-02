@@ -4,19 +4,32 @@ import { distinctUntilChanged, map, pluck } from 'rxjs/operators'
 import { ActionsSubject } from './actions_subject'
 import { Action, ActionReducer, FunctionIsNotAllowed } from './models'
 import { ReducerManager } from './reducer_manager'
-import { StateObservable } from './state'
+import { StateSubject } from './state'
 
 export class Store<T> extends Observable<T> implements Observer<Action> {
 	actions$ = this.actionsObserver.asObservable()
 
 	constructor(
-		state$: StateObservable,
+		private stateSubject: StateSubject,
 		private actionsObserver: ActionsSubject,
 		private reducerManager: ReducerManager
 	) {
 		super()
 
-		this.source = state$
+		this.source = stateSubject.asObservable()
+	}
+
+	get currentState(): T {
+		const state = this.stateSubject.getValue()
+
+		if (state) {
+			debugger
+		}
+		return state
+	}
+
+	selectSync<K>(selector: (state: T) => K) {
+		return selector(this.currentState)
 	}
 
 	select<K>(mapFn: (state: T) => K): Observable<K>
@@ -87,7 +100,11 @@ export class Store<T> extends Observable<T> implements Observer<Action> {
 	}
 
 	lift<R>(operator: Operator<T, R>): Store<R> {
-		const store = new Store<R>(this, this.actionsObserver, this.reducerManager)
+		const store = new Store<R>(
+			this.stateSubject,
+			this.actionsObserver,
+			this.reducerManager
+		)
 		store.operator = operator
 
 		return store

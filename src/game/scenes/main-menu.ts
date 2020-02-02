@@ -8,19 +8,13 @@ export class MainMenu extends Renderable {
 	private defaultFontSize = config.fontScale
 	private titleFontSize = this.defaultFontSize * 3
 	private activeItem: number | undefined
-	private hasActivatedSinceMouseDown: boolean | undefined
-	private hasActivatedSinceKeyDown: boolean | undefined
 	private items = [
 		{
 			text: 'New Game',
 			onSelect: () => {
 				this.setActiveScene(
-					new Dungeon(
-						() => this.state,
-						newState => {
-							this.state = { ...newState }
-						},
-						(scene: Renderable) => this.setActiveScene(scene)
+					new Dungeon(this.store, (scene: Renderable) =>
+						this.setActiveScene(scene)
 					)
 				)
 			}
@@ -59,39 +53,37 @@ export class MainMenu extends Renderable {
 		const x = (clientWidth - width) / 2
 		const y = (clientHeight - height) / 2
 
-		const { keys } = this.state
+		// if (keys && keys.length) {
+		// 	if (this.keyIsPressed('up')) {
+		// 		this.state.cursorPosition = undefined
+		// 		this.activeItem =
+		// 			this.activeItem !== undefined ? this.activeItem - 1 : 0
+		// 	} else if (this.keyIsPressed('down')) {
+		// 		this.state.cursorPosition = undefined
+		// 		this.activeItem =
+		// 			this.activeItem !== undefined ? this.activeItem + 1 : 0
+		// 	}
 
-		if (keys && keys.length) {
-			if (this.keyIsPressed('up')) {
-				this.state.cursorPosition = undefined
-				this.activeItem =
-					this.activeItem !== undefined ? this.activeItem - 1 : 0
-			} else if (this.keyIsPressed('down')) {
-				this.state.cursorPosition = undefined
-				this.activeItem =
-					this.activeItem !== undefined ? this.activeItem + 1 : 0
-			}
+		// 	if (this.isNotNullish(this.activeItem)) {
+		// 		if (this.activeItem < 0) {
+		// 			this.activeItem = 0
+		// 		}
+		// 		if (this.activeItem > this.items.length - 1) {
+		// 			this.activeItem = this.items.length - 1
+		// 		}
 
-			if (this.isNotNullish(this.activeItem)) {
-				if (this.activeItem < 0) {
-					this.activeItem = 0
-				}
-				if (this.activeItem > this.items.length - 1) {
-					this.activeItem = this.items.length - 1
-				}
+		// 		const activeItem = this.items[this.activeItem]
 
-				const activeItem = this.items[this.activeItem]
-
-				if (!activeItem.disabled && this.keyIsPressed('select')) {
-					if (!this.hasActivatedSinceKeyDown) {
-						this.hasActivatedSinceKeyDown = true
-						activeItem.onSelect()
-					}
-				}
-			}
-		} else {
-			this.hasActivatedSinceKeyDown = false
-		}
+		// 		if (!activeItem.disabled && this.keyIsPressed('select')) {
+		// 			if (!this.hasActivatedSinceKeyDown) {
+		// 				this.hasActivatedSinceKeyDown = true
+		// 				activeItem.onSelect()
+		// 			}
+		// 		}
+		// 	}
+		// } else {
+		// 	this.hasActivatedSinceKeyDown = false
+		// }
 
 		this.drawBackground(ctx, x, y, width, height)
 		this.drawTitle(ctx, clientWidth / 2, y + titleHeight * 2)
@@ -182,14 +174,14 @@ export class MainMenu extends Renderable {
 		) {
 			this.activeItem = index
 
-			if (this.state.mouseDown) {
-				if (!this.hasActivatedSinceMouseDown) {
-					this.hasActivatedSinceMouseDown = true
-					this.items[index].onSelect()
-				}
-			} else {
-				this.hasActivatedSinceMouseDown = false
-			}
+			// if (this.state.mouseDown) {
+			// 	if (!this.hasActivatedSinceMouseDown) {
+			// 		this.hasActivatedSinceMouseDown = true
+			// 		this.items[index].onSelect()
+			// 	}
+			// } else {
+			// 	this.hasActivatedSinceMouseDown = false
+			// }
 		}
 
 		const isActiveItem = this.activeItem === index

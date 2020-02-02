@@ -2,12 +2,8 @@ import { Renderable } from '../renderable'
 import { World } from '../world'
 
 export class Dungeon extends Renderable {
-	private world: World = new World(
-		() => this.state,
-		newState => {
-			this.state = newState
-		},
-		(scene: Renderable) => this.setActiveScene(scene)
+	private world: World = new World(this.store, (scene: Renderable) =>
+		this.setActiveScene(scene)
 	)
 
 	public render(ctx: CanvasRenderingContext2D) {

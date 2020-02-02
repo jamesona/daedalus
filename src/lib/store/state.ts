@@ -6,7 +6,7 @@ import { Action, ActionReducer } from './models'
 import { ReducerObservable } from './reducer_manager'
 import { ScannedActionsSubject } from './scanned_actions_subject'
 
-export abstract class StateObservable extends Observable<any> {}
+export abstract class StateSubject extends BehaviorSubject<any> {}
 
 export class State<T> extends BehaviorSubject<any> {
 	static readonly INIT = INIT

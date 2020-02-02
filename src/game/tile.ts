@@ -1,6 +1,7 @@
 import Tiles from '../assets/img/tiles.png'
 import { config } from '../config'
-import { Renderable, StateGetter, StateSetter, ChangeScene } from './renderable'
+import { Renderable, ChangeScene } from './renderable'
+import { Store } from '../lib/store'
 
 export enum TileTypes {
 	Wall_1,
@@ -26,13 +27,12 @@ export enum TileTypes {
 
 export class Tile extends Renderable {
 	constructor(
-		get: StateGetter,
-		set: StateSetter,
+		protected store: Store<any>,
 		setActiveScene: ChangeScene,
 		private location: [number, number],
 		private type: number
 	) {
-		super(get, set, setActiveScene)
+		super(store, setActiveScene)
 	}
 
 	private get textureCoords(): [number, number] {

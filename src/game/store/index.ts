@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs'
+import { BehaviorSubject } from 'rxjs'
 import {
 	StateObservable,
 	ActionsSubject,
@@ -10,23 +10,22 @@ import {
 	createReducerFactory
 } from '../../lib/store'
 import { combineReducers } from '../../lib/store/utils'
+import { userInputReducer } from '../input-handler'
 
 const initialState: any = {}
 type GameAction = any
 type GameState = any
 
-const state$: StateObservable = new Subject<any>().asObservable()
+const state$: StateObservable = new BehaviorSubject<GameState>(undefined)
 const actionsObserver: ActionsSubject = new ActionsSubject()
 const dispatcher: ReducerManagerDispatcher = new ActionsSubject()
-const reducers: ActionReducerMap<GameState, GameAction> = {}
-const reducerFactory: ActionReducerFactory<
-	any,
-	any
-> = createReducerFactory(combineReducers(reducers, initialState), [
-	window['__REDUX_DEVTOOLS_EXTENSION__' as any]
-		? (window['__REDUX_DEVTOOLS_EXTENSION__' as any] as any)()
-		: <T>(state: T) => state
-])
+const reducers: ActionReducerMap<GameState, GameAction> = {
+	input: userInputReducer
+}
+const reducerFactory: ActionReducerFactory<any, any> = createReducerFactory(
+	combineReducers(reducers, initialState),
+	[]
+)
 const reducerManager: ReducerManager = new ReducerManager(
 	dispatcher,
 	initialState,
@@ -34,7 +33,7 @@ const reducerManager: ReducerManager = new ReducerManager(
 	reducerFactory
 )
 
-export const store: Store<any> = new Store<any>(
+export const store: Store<GameState> = new Store<GameState>(
 	state$,
 	actionsObserver,
 	reducerManager
