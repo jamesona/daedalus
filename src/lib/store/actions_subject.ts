@@ -2,19 +2,17 @@ import { BehaviorSubject } from 'rxjs'
 
 import { Action } from './models'
 
-export const INIT = '@ngrx/store/init' as '@ngrx/store/init'
-
 export class ActionsSubject extends BehaviorSubject<Action> {
 	constructor() {
-		super({ type: INIT })
+		super({ type: 'init' })
 	}
 
 	next(action: Action): void {
 		if (typeof action === 'function') {
 			throw new TypeError(`
-        Dispatch expected an object, instead it received a function.
-        If you're using the createAction function, make sure to invoke the function
-        before dispatching the action. For example, someAction should be someAction().`)
+				Dispatch expected an object, instead it received a function.
+				If you're using the createAction function, make sure to invoke the function
+				before dispatching the action. For example, someAction should be someAction().`)
 		} else if (typeof action === 'undefined') {
 			throw new TypeError(`Actions must be objects`)
 		} else if (typeof action.type === 'undefined') {

@@ -615,7 +615,7 @@ export function createFeatureSelector(
 			const featureState = state[featureName]
 			if (!(featureName in state)) {
 				console.warn(
-					`@ngrx/store: The feature name \"${featureName}\" does ` +
+					`store: The feature name \"${featureName}\" does ` +
 						'not exist in the state, therefore createFeatureSelector ' +
 						'cannot access it.  Be sure it is imported in a loaded module ' +
 						`using StoreModule.forRoot('${featureName}', ...) or ` +

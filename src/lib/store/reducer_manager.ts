@@ -2,7 +2,6 @@ import { BehaviorSubject, Observable } from 'rxjs'
 
 import { ActionsSubject } from './actions_subject'
 import {
-	Action,
 	ActionReducer,
 	ActionReducerFactory,
 	StoreFeature,
@@ -13,13 +12,11 @@ export abstract class ReducerObservable extends Observable<
 	ActionReducer<any, any>
 > {}
 export abstract class ReducerManagerDispatcher extends ActionsSubject {}
-export const UPDATE = 'update-reducers' as 'update-reducers'
 
 export class ReducerManager extends BehaviorSubject<ActionReducer<any, any>> {
 	private reducers: ActionReducerMap<any, any> = {}
 
 	constructor(
-		private dispatcher: ReducerManagerDispatcher,
 		private reducerFactory: ActionReducerFactory<any, any>,
 		private initialState: object
 	) {
@@ -55,9 +52,5 @@ export class ReducerManager extends BehaviorSubject<ActionReducer<any, any>> {
 	private updateReducers(newReducers: ActionReducerMap<any, any>) {
 		this.reducers = { ...this.reducers, ...newReducers }
 		this.next(this.reducerFactory(this.reducers, this.initialState))
-		this.dispatcher.next(<Action>{
-			type: UPDATE,
-			features: Object.keys(newReducers)
-		})
 	}
 }
