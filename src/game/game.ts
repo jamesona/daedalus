@@ -1,16 +1,20 @@
-/// <reference path='../images.d.ts'/>
 import Pointer from '../assets/img/pointer.png'
 
 import { GameState } from './game-state'
 import { Renderable } from './renderable'
 import { MainMenu } from './scenes/main-menu'
+import { store } from './store'
+import { InputHandler } from '../lib/input-handler'
 
-let lastCursorPoll: Date
+let lastCursorPosition: [number, number]
 
 export class Game {
+	private _frameCache = new Image()
+	private _store = store
+	private _inputHandler = new InputHandler(this._store)
 	private _state: GameState = new GameState()
-	private canvas: HTMLCanvasElement = document.createElement('canvas')
-	private renderContext = this.canvas.getContext(
+	private _canvas: HTMLCanvasElement = document.createElement('canvas')
+	private _renderContext = this._canvas.getContext(
 		'2d'
 	) as CanvasRenderingContext2D
 	private activeScene: Renderable = new MainMenu(
@@ -25,24 +29,14 @@ export class Game {
 
 	constructor(hostElement: HTMLElement) {
 		hostElement.innerHTML = ''
-		hostElement.appendChild(this.canvas)
+		hostElement.appendChild(this._canvas)
 
 		window.addEventListener('resize', () => this.onClientRectUpdate())
 
-		document.addEventListener('mousemove', (e: MouseEvent) => {
-			const { clientX, clientY } = e
-
-			if (
-				!lastCursorPoll ||
-				new Date().valueOf() - lastCursorPoll.valueOf() > 1000 / 60
-			) {
-				lastCursorPoll = new Date()
-				this.state = {
-					...this.state,
-					cursorPosition: [clientX, clientY]
-				}
-			}
-			// this.drawCursor(this.renderContext, clientX, clientY)
+		this._inputHandler.cursorPosition$().subscribe(([clientX, clientY]) => {
+			lastCursorPosition = [clientX, clientY]
+			this._renderContext.restore()
+			this.drawCursor(clientX, clientY)
 		})
 
 		document.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -83,7 +77,10 @@ export class Game {
 	}
 
 	public set state(newState: Partial<GameState>) {
-		this._state = new GameState(this._state, newState)
+		this._state = new GameState(this._state, {
+			...newState,
+			cursorPosition: lastCursorPosition
+		})
 		this.render()
 	}
 
@@ -92,27 +89,27 @@ export class Game {
 	}
 
 	public get width() {
-		return Number(this.canvas.getAttribute('width'))
+		return Number(this._canvas.getAttribute('width'))
 	}
 
 	public set width(val: number) {
-		this.canvas.setAttribute('width', String(val))
+		this._canvas.setAttribute('width', String(val))
 	}
 
 	public get height() {
-		return Number(this.canvas.getAttribute('height'))
+		return Number(this._canvas.getAttribute('height'))
 	}
 
 	public set height(val: number) {
-		this.canvas.setAttribute('height', String(val))
+		this._canvas.setAttribute('height', String(val))
 	}
 
 	public onClientRectUpdate() {
-		const rect: DOMRect = this.canvas.getBoundingClientRect()
+		const rect: DOMRect = this._canvas.getBoundingClientRect()
 		this.width = rect.width
 		this.height = rect.height
-		this.canvas.setAttribute('width', String(rect.width))
-		this.canvas.setAttribute('height', String(rect.height))
+		this._canvas.setAttribute('width', String(rect.width))
+		this._canvas.setAttribute('height', String(rect.height))
 		this.render()
 	}
 
@@ -121,15 +118,31 @@ export class Game {
 	}
 
 	public render() {
-		this.renderContext.fillStyle = 'black'
-		this.renderContext.fillRect(0, 0, this.width, this.height)
-		this.activeScene.render(this.renderContext)
-		if (this.state.cursorPosition) this.drawCursor(...this.state.cursorPosition)
+		this._renderContext.fillStyle = 'black'
+		this._renderContext.fillRect(0, 0, this.width, this.height)
+		this.activeScene.render(this._renderContext)
+		this.saveFrame()
+	}
+
+	private saveFrame(): void {
+		this._canvas.toBlob(blob => {
+			if (this._frameCache.src) {
+				URL.revokeObjectURL(this._frameCache.src)
+			}
+			this._frameCache.src = URL.createObjectURL(blob)
+		})
+	}
+
+	private loadFrame(): void {
+		if (this._frameCache.src) {
+			this._renderContext.drawImage(this._frameCache, 0, 0)
+		}
 	}
 
 	private drawCursor(x: number, y: number) {
+		this.loadFrame()
 		const image = new Image()
 		image.src = Pointer
-		this.renderContext.drawImage(image, x - 4, y - 2)
+		this._renderContext.drawImage(image, x - 4, y - 2)
 	}
 }
