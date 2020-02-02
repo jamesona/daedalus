@@ -169,10 +169,8 @@ export abstract class Renderable {
 	}
 
 	public keyIsPressed(key: keyof typeof config.keyBindings) {
-		return config.keyBindings[key].some(
-			boundKey =>
-				// this.store.keys.includes(boundKey)
-				!!boundKey
+		return config.keyBindings[key].some(boundKey =>
+			this.state?.keys?.includes(boundKey)
 		)
 	}
 }

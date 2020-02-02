@@ -40,7 +40,7 @@ export type MetaReducer<T = any, V extends Action = Action> = (
 
 export interface StoreFeature<T, V extends Action = Action> {
 	key: string
-	reducers: ActionReducerMap<T, V> | ActionReducer<T, V>
+	reducers: ActionReducerMap<T, V>
 	reducerFactory: ActionReducerFactory<T, V>
 	initialState?: InitialState<T>
 	metaReducers?: MetaReducer<T, V>[]

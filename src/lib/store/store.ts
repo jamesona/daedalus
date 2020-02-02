@@ -1,8 +1,18 @@
 import { Observable, Observer, Operator } from 'rxjs'
-import { distinctUntilChanged, map, pluck } from 'rxjs/operators'
+import {
+	distinctUntilChanged,
+	map,
+	pluck,
+	withLatestFrom
+} from 'rxjs/operators'
 
 import { ActionsSubject } from './actions_subject'
-import { Action, ActionReducer, FunctionIsNotAllowed } from './models'
+import {
+	Action,
+	FunctionIsNotAllowed,
+	StoreFeature,
+	ActionReducer
+} from './models'
 import { ReducerManager } from './reducer_manager'
 import { StateSubject } from './state'
 
@@ -17,15 +27,22 @@ export class Store<T> extends Observable<T> implements Observer<Action> {
 		super()
 
 		this.source = stateSubject.asObservable()
+
+		this.actionsObserver
+			.asObservable()
+			.pipe(
+				withLatestFrom(
+					this.stateSubject.asObservable(),
+					this.reducerManager.asObservable(),
+					(action, state, reducer) => reducer(state, action)
+				),
+				distinctUntilChanged()
+			)
+			.subscribe(state => this.stateSubject.next(state))
 	}
 
 	get currentState(): T {
-		const state = this.stateSubject.getValue()
-
-		if (state) {
-			debugger
-		}
-		return state
+		return this.stateSubject.getValue()
 	}
 
 	selectSync<K>(selector: (state: T) => K) {
@@ -139,8 +156,10 @@ export class Store<T> extends Observable<T> implements Observer<Action> {
 		this.reducerManager.addReducer(key, reducer)
 	}
 
-	removeReducer<Key extends Extract<keyof T, string>>(key: Key) {
-		this.reducerManager.removeReducer(key)
+	addReducerMap<State, Actions extends Action>(
+		feature: StoreFeature<State, Actions>
+	) {
+		this.reducerManager.addFeature(feature)
 	}
 }
 

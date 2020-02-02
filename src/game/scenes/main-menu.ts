@@ -1,14 +1,22 @@
 import { Renderable } from '../renderable'
 import { config } from '../../config'
 import { Dungeon } from './dungeon'
+import { BoundingBox } from '../../lib/types'
 
 type CTX = CanvasRenderingContext2D
+
+interface MenuItem {
+	text: string
+	onSelect(): void
+	hitbox: BoundingBox | undefined
+	disabled?: true
+}
 
 export class MainMenu extends Renderable {
 	private defaultFontSize = config.fontScale
 	private titleFontSize = this.defaultFontSize * 3
 	private activeItem: number | undefined
-	private items = [
+	private items: MenuItem[] = [
 		{
 			text: 'New Game',
 			onSelect: () => {
@@ -17,24 +25,29 @@ export class MainMenu extends Renderable {
 						this.setActiveScene(scene)
 					)
 				)
-			}
+			},
+			hitbox: undefined
 		},
 		{
 			text: 'Continue Game',
 			onSelect: () => {},
+			hitbox: undefined,
 			disabled: true
 		},
 		{
 			text: 'Import Save',
-			onSelect: () => {}
+			onSelect: () => {},
+			hitbox: undefined
 		},
 		{
 			text: 'Export Save',
-			onSelect: () => {}
+			onSelect: () => {},
+			hitbox: undefined
 		},
 		{
 			text: 'About',
-			onSelect: () => {}
+			onSelect: () => {},
+			hitbox: undefined
 		}
 	]
 
@@ -166,22 +179,35 @@ export class MainMenu extends Renderable {
 		index: number,
 		margin: number = 0
 	) {
+		const hitbox: [number, number, number, number] = [
+			x + margin,
+			y,
+			x + width - margin,
+			y + height
+		]
+		const thisItem = this.items[index]
+		if (
+			!thisItem.hitbox ||
+			JSON.stringify(thisItem.hitbox) === JSON.stringify(hitbox)
+		) {
+			this.items[index].hitbox = hitbox
+		}
+
+		const checkForCursor = () => this.cursorInArea(...hitbox)
+
 		const isDisabled = this.items[index].disabled
 
-		if (
-			!isDisabled &&
-			this.cursorInArea(x + margin, y, x + width - margin, y + height)
-		) {
+		if (!isDisabled && checkForCursor()) {
 			this.activeItem = index
 
-			// if (this.state.mouseDown) {
-			// 	if (!this.hasActivatedSinceMouseDown) {
-			// 		this.hasActivatedSinceMouseDown = true
-			// 		this.items[index].onSelect()
-			// 	}
-			// } else {
-			// 	this.hasActivatedSinceMouseDown = false
-			// }
+			if (this.state?.mouseDown) {
+				// if (!this.hasActivatedSinceMouseDown) {
+				// 	this.hasActivatedSinceMouseDown = true
+				// 	this.items[index].onSelect()
+				// }
+			} else {
+				// this.hasActivatedSinceMouseDown = false
+			}
 		}
 
 		const isActiveItem = this.activeItem === index

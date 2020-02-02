@@ -36,9 +36,4 @@ export {
 	DefaultProjectorFn
 } from './selector'
 export { State, StateSubject as StateObservable, reduceState } from './state'
-export {
-	StoreRootModule,
-	StoreFeatureModule,
-	StoreConfig
-} from './store_module'
 export { On, on, createReducer } from './reducer_creator'

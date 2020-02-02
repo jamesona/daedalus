@@ -1,7 +1,7 @@
 import { Renderable } from './renderable'
 import { MainMenu } from './scenes/main-menu'
 import { store } from './store'
-import { InputHandler } from './input-handler'
+import { InputHandler } from './input-handler/input-handler'
 
 export class Game {
 	private _store = store
