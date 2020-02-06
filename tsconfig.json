@@ -2,23 +2,20 @@
 	"compileOnSave": true,
 	"compilerOptions": {
 		"outDir": "./dist/",
-		"baseUrl": "./src",
 		"sourceMap": true,
 		"declaration": false,
 		"strict": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"moduleResolution": "node",
-		"module": "es6",
+		"module": "commonjs",
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"target": "es5",
-		"typeRoots": [
-			"node_modules/@types"
-		],
-		"lib": [
-			"es2017",
-			"dom"
-		],
-	}
+		"typeRoots": ["node_modules/@types"],
+		"lib": ["es2017", "dom"]
+	},
+	"files": ["src/images.d.ts", "node_modules/rxjs/Rx.d.ts"],
+	"include": ["src/**/*"],
+	"exclude": ["node_modules"]
 }

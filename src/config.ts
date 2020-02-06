@@ -1,12 +1,14 @@
 const defaults = {
 	title: 'Daedalus',
 	fontName: 'Press Start 2P',
-	fontScale: 0.1,
-	menuColor: '#666',
-	menuItemColor: '#555',
-	menuItemHoverColor: '#644',
-	menuTextColor: '#ccc',
-	menuTextHoverColor: '#fff',
+	fontScale: 100,
+	selectedItemColor: '#501500',
+	menuColor: '#555',
+	menuItemColor: '#444',
+	menuTextColor: '#bbb',
+	menuTextHoverColor: '#eee',
+	menuItemDisabledColor: '#666',
+	menuTextDisabledColor: '#444',
 	keyBindings: {
 		up: ['ArrowUp', 'w'],
 		down: ['ArrowDown', 's'],
@@ -14,7 +16,9 @@ const defaults = {
 		right: ['ArrowRight', 'd'],
 		select: ['Enter', ' '],
 		back: ['Escape', 'Backspace']
-	}
+	},
+	roomSize: [16, 16] as [number, number],
+	tileSize: 16
 }
 
 const userPreferences = {}
