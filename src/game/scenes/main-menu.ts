@@ -2,8 +2,16 @@ import { Renderable } from '../renderable'
 import { config } from '../../config'
 import { Dungeon } from './dungeon'
 import { BoundingBox } from '../../lib/types'
+import {
+	selectUserInputState,
+	selectKeysDown
+} from '../input-handler/selectors'
+import { InputState } from '../input-handler/reducer'
 
 type CTX = CanvasRenderingContext2D
+
+let savedCtx: CTX
+let hasActivatedSinceKeyDown: boolean
 
 interface MenuItem {
 	text: string
@@ -50,8 +58,17 @@ export class MainMenu extends Renderable {
 			hitbox: undefined
 		}
 	]
+	public state: InputState | undefined
+
+	public onInit() {
+		this.store.select(selectUserInputState).subscribe(state => {
+			this.state = state
+			if (savedCtx) this.render(savedCtx)
+		})
+	}
 
 	public render(ctx: CTX) {
+		savedCtx = ctx
 		const {
 			width: clientWidth,
 			height: clientHeight
@@ -66,37 +83,35 @@ export class MainMenu extends Renderable {
 		const x = (clientWidth - width) / 2
 		const y = (clientHeight - height) / 2
 
-		// if (keys && keys.length) {
-		// 	if (this.keyIsPressed('up')) {
-		// 		this.state.cursorPosition = undefined
-		// 		this.activeItem =
-		// 			this.activeItem !== undefined ? this.activeItem - 1 : 0
-		// 	} else if (this.keyIsPressed('down')) {
-		// 		this.state.cursorPosition = undefined
-		// 		this.activeItem =
-		// 			this.activeItem !== undefined ? this.activeItem + 1 : 0
-		// 	}
-
-		// 	if (this.isNotNullish(this.activeItem)) {
-		// 		if (this.activeItem < 0) {
-		// 			this.activeItem = 0
-		// 		}
-		// 		if (this.activeItem > this.items.length - 1) {
-		// 			this.activeItem = this.items.length - 1
-		// 		}
-
-		// 		const activeItem = this.items[this.activeItem]
-
-		// 		if (!activeItem.disabled && this.keyIsPressed('select')) {
-		// 			if (!this.hasActivatedSinceKeyDown) {
-		// 				this.hasActivatedSinceKeyDown = true
-		// 				activeItem.onSelect()
-		// 			}
-		// 		}
-		// 	}
-		// } else {
-		// 	this.hasActivatedSinceKeyDown = false
-		// }
+		if (this.state) {
+			const keysDown = selectKeysDown(this.state)
+			if (keysDown && keysDown.length) {
+				if (this.keyIsPressed('up')) {
+					this.activeItem =
+						this.activeItem !== undefined ? this.activeItem - 1 : 0
+				} else if (this.keyIsPressed('down')) {
+					this.activeItem =
+						this.activeItem !== undefined ? this.activeItem + 1 : 0
+				}
+				if (this.isNotNullish(this.activeItem)) {
+					if (this.activeItem < 0) {
+						this.activeItem = 0
+					}
+					if (this.activeItem > this.items.length - 1) {
+						this.activeItem = this.items.length - 1
+					}
+					const activeItem = this.items[this.activeItem]
+					if (!activeItem.disabled && this.keyIsPressed('select')) {
+						if (!hasActivatedSinceKeyDown) {
+							hasActivatedSinceKeyDown = true
+							activeItem.onSelect()
+						}
+					}
+				}
+			} else {
+				hasActivatedSinceKeyDown = false
+			}
+		}
 
 		this.drawBackground(ctx, x, y, width, height)
 		this.drawTitle(ctx, clientWidth / 2, y + titleHeight * 2)

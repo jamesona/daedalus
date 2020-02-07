@@ -1,26 +1,44 @@
 import { BehaviorSubject, Observable } from 'rxjs'
 
 import { ActionsSubject } from './actions_subject'
-import {
-	ActionReducer,
-	ActionReducerFactory,
-	StoreFeature,
-	ActionReducerMap
-} from './models'
+import { ActionReducer, StoreFeature, ActionReducerMap, Action } from './models'
 
 export abstract class ReducerObservable extends Observable<
 	ActionReducer<any, any>
 > {}
 export abstract class ReducerManagerDispatcher extends ActionsSubject {}
 
-export class ReducerManager extends BehaviorSubject<ActionReducer<any, any>> {
-	private reducers: ActionReducerMap<any, any> = {}
+export function makeDefaultReducerFactory<T, U extends Action>() {
+	return (
+		reducerMap: ActionReducerMap<T, Action>,
+		initialState: T = {} as any
+	): ActionReducer<T, U> => {
+		const keys: Array<keyof T> = Object.keys(reducerMap) as Array<keyof T>
+		const combine: ActionReducer<T, U> = ((state: T, action: U) => {
+			const combinedState: T = {
+				...initialState,
+				...state
+			}
+			return keys.reduce((state, key) => {
+				const newState: T = {
+					...state,
+					[key]: reducerMap[key](state[key], action)
+				}
 
+				return newState
+			}, combinedState)
+		}) as ActionReducer<T, U>
+		return combine
+	}
+}
+
+export class ReducerManager extends BehaviorSubject<ActionReducer<any, any>> {
 	constructor(
-		private reducerFactory: ActionReducerFactory<any, any>,
-		private initialState: object
+		private reducers: ActionReducerMap<any, any>,
+		private initialState: object,
+		private reducerFactory = makeDefaultReducerFactory<any, any>()
 	) {
-		super(reducerFactory({}, {}))
+		super(reducerFactory(reducers, initialState))
 	}
 
 	addFeature(feature: StoreFeature<any, any>) {

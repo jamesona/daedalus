@@ -8,8 +8,9 @@ import { userInputReducer, InputState } from './reducer'
 import { Coordinates } from '../../lib/types'
 
 export class InputHandler {
+	public static storeNodeName = 'input' as 'input'
 	public constructor(private store: Store<{ input: InputState }>) {
-		this.store.addReducer('input', userInputReducer)
+		this.store.addReducer(InputHandler.storeNodeName, userInputReducer)
 
 		document.addEventListener('mousemove', (event: MouseEvent) => {
 			this.store.dispatch(fromActions.mouseMove({ event }))

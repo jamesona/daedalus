@@ -4,11 +4,13 @@ import * as fromActions from './actions'
 
 export interface InputState {
 	keysDown: Array<keyof typeof config.keyBindings>
+	mouseDown: boolean
 	cursorPosition: [number, number] | null
 }
 
 const createInitialState = (): InputState => ({
 	keysDown: [],
+	mouseDown: false,
 	cursorPosition: null
 })
 

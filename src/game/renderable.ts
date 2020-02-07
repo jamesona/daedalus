@@ -11,8 +11,11 @@ export abstract class Renderable {
 	constructor(
 		protected store: Store<any>,
 		protected setActiveScene: ChangeScene
-	) {}
+	) {
+		if (this.onInit) this.onInit()
+	}
 
+	public onInit?(): void
 	public abstract render(ctx: CTX): void
 
 	public get state() {
