@@ -2,14 +2,16 @@ import { map } from 'rxjs/operators'
 
 import { Store } from '../../lib/store'
 import { ofType } from '../../lib/store/ofType'
+import { Coordinates } from '../../lib/types'
+import { store } from '../store'
 
 import * as fromActions from './actions'
 import { userInputReducer, InputState } from './reducer'
-import { Coordinates } from '../../lib/types'
 
 export class InputHandler {
+	private store: Store<{ input: InputState }> = store
 	public static storeNodeName = 'input' as 'input'
-	public constructor(private store: Store<{ input: InputState }>) {
+	public constructor() {
 		this.store.addReducer(InputHandler.storeNodeName, userInputReducer)
 
 		document.addEventListener('mousemove', (event: MouseEvent) => {

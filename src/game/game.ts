@@ -1,18 +1,15 @@
 import { Renderable } from './renderable'
 import { MainMenu } from './scenes/main-menu'
-import { store } from './store'
 import { InputHandler } from './input-handler/input-handler'
 
 export class Game {
-	private _store = store
-	private _inputHandler = new InputHandler(this._store)
+	private _inputHandler = new InputHandler()
 	private _canvas: HTMLCanvasElement = document.createElement('canvas')
 	private _renderContext = this._canvas.getContext(
 		'2d'
 	) as CanvasRenderingContext2D
-	private activeScene: Renderable = new MainMenu(
-		this._store,
-		(scene: Renderable) => this.setActiveScene(scene)
+	private _activeScene: Renderable = new MainMenu((scene: Renderable) =>
+		this.setActiveScene(scene)
 	)
 
 	constructor(hostElement: HTMLElement) {
@@ -22,13 +19,13 @@ export class Game {
 		this._inputHandler
 			.cursorPosition$()
 			.subscribe(([clientX, clientY]: [number, number]) => {
-				this.activeScene.drawCursor(this._renderContext, clientX, clientY)
+				this._activeScene.drawCursor(this._renderContext, clientX, clientY)
 			})
 		this.onClientRectUpdate()
 	}
 
 	public setActiveScene(scene: Renderable) {
-		this.activeScene = scene
+		this._activeScene = scene
 	}
 
 	public onClientRectUpdate() {
@@ -39,12 +36,12 @@ export class Game {
 	}
 
 	public setScene(scene: Renderable) {
-		this.activeScene = scene
+		this._activeScene = scene
 	}
 
 	public render() {
-		this.activeScene.clear(this._renderContext)
-		this.activeScene.render(this._renderContext)
-		this.activeScene.saveFrame(this._renderContext)
+		this._activeScene.clear(this._renderContext)
+		this._activeScene.render(this._renderContext)
+		this._activeScene.saveFrame(this._renderContext)
 	}
 }

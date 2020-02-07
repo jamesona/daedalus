@@ -32,7 +32,7 @@ export class Tile extends Renderable {
 		private location: [number, number],
 		private type: number
 	) {
-		super(store, setActiveScene)
+		super(setActiveScene)
 	}
 
 	private get textureCoords(): [number, number] {

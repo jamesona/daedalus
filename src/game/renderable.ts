@@ -1,15 +1,15 @@
 import Pointer from '../assets/img/pointer.png'
 import { config } from '../config'
 import { Store } from '../lib/store'
+import { store, GameState } from './store'
 import { CanvasAPI, CTX } from '../lib/canvas'
 
 export type ChangeScene = (scene: Renderable) => void
 
 export abstract class Renderable extends CanvasAPI {
-	constructor(
-		protected store: Store<any>,
-		protected setActiveScene: ChangeScene
-	) {
+	protected store: Store<GameState> = store
+
+	constructor(protected setActiveScene: ChangeScene) {
 		super()
 		if (this.onInit) this.onInit()
 	}
@@ -37,16 +37,14 @@ export abstract class Renderable extends CanvasAPI {
 	}
 
 	public cursorInArea(x1: number, y1: number, x2: number, y2: number) {
-		if (!this.state?.cursorPosition) return false
-		const [mx, my] = this.state.cursorPosition
+		if (!this.state?.input?.cursorPosition) return false
+		const [mx, my] = this.state.input.cursorPosition
 		const isInArea = mx >= x1 && mx <= x2 && my >= y1 && my <= y2
 
 		return isInArea
 	}
 
 	public keyIsPressed(key: keyof typeof config.keyBindings) {
-		return config.keyBindings[key].some(boundKey =>
-			this.state?.keys?.includes(boundKey)
-		)
+		return this.state?.input?.keysDown?.includes(key)
 	}
 }

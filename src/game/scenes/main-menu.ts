@@ -6,7 +6,6 @@ import {
 	selectUserInputState,
 	selectKeysDown
 } from '../input-handler/selectors'
-import { InputState } from '../input-handler/reducer'
 import { Nullish } from '../../lib/nullish'
 
 type CTX = CanvasRenderingContext2D
@@ -30,40 +29,37 @@ export class MainMenu extends Renderable {
 			text: 'New Game',
 			onSelect: () => {
 				this.setActiveScene(
-					new Dungeon(this.store, (scene: Renderable) =>
-						this.setActiveScene(scene)
-					)
+					new Dungeon((scene: Renderable) => this.setActiveScene(scene))
 				)
 			},
 			hitbox: undefined
 		},
 		{
 			text: 'Continue Game',
-			onSelect: () => { },
+			onSelect: () => {},
 			hitbox: undefined,
 			disabled: true
 		},
 		{
 			text: 'Import Save',
-			onSelect: () => { },
+			onSelect: () => {},
 			hitbox: undefined
 		},
 		{
 			text: 'Export Save',
-			onSelect: () => { },
+			onSelect: () => {},
 			hitbox: undefined
 		},
 		{
 			text: 'About',
-			onSelect: () => { },
+			onSelect: () => {},
 			hitbox: undefined
 		}
 	]
-	public state: InputState | undefined
+	private hasActivatedSinceMouseDown: boolean = false
 
 	public onInit() {
-		this.store.select(selectUserInputState).subscribe(state => {
-			this.state = state
+		this.store.select(selectUserInputState).subscribe(() => {
 			if (savedCtx) this.render(savedCtx)
 		})
 	}
@@ -217,11 +213,11 @@ export class MainMenu extends Renderable {
 		if (!isDisabled && checkForCursor()) {
 			this.activeItem = index
 
-			if (this.state?.mouseDown) {
-				// if (!this.hasActivatedSinceMouseDown) {
-				// 	this.hasActivatedSinceMouseDown = true
-				// 	this.items[index].onSelect()
-				// }
+			if (this.state.input.mouseDown) {
+				if (!this.hasActivatedSinceMouseDown) {
+					this.hasActivatedSinceMouseDown = true
+					this.items[index].onSelect()
+				}
 			} else {
 				// this.hasActivatedSinceMouseDown = false
 			}

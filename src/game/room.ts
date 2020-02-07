@@ -1,5 +1,4 @@
 import { config } from '../config'
-import { Store } from '../lib/store'
 import { Renderable, ChangeScene } from './renderable'
 import { Tile, TileTypes } from './tile'
 
@@ -7,7 +6,6 @@ export class Room extends Renderable {
 	private tiles: Tile[][] | undefined
 
 	constructor(
-		store: Store<any>,
 		setActiveScene: ChangeScene,
 		private requiredDoors: [boolean, boolean, boolean, boolean] = [
 			false,
@@ -16,7 +14,7 @@ export class Room extends Renderable {
 			false
 		]
 	) {
-		super(store, setActiveScene)
+		super(setActiveScene)
 	}
 	public generate(ctx: CanvasRenderingContext2D) {
 		console.log(this.requiredDoors)

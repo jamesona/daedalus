@@ -8,7 +8,7 @@ export interface InputState {
 	cursorPosition: [number, number] | null
 }
 
-const createInitialState = (): InputState => ({
+export const createInitialState = (): InputState => ({
 	keysDown: [],
 	mouseDown: false,
 	cursorPosition: null
