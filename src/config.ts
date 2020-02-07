@@ -17,6 +17,7 @@ const defaults = {
 		select: ['Enter', ' '],
 		back: ['Escape', 'Backspace']
 	},
+	cursorPollRate: 10,
 	roomSize: [16, 16] as [number, number],
 	tileSize: 16
 }

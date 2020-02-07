@@ -17,16 +17,11 @@ export class CanvasAPI {
 
 	public clear(ctx: CTX) {
 		const { width, height } = this.getClientBoundingRect(ctx)
-		this.fillRect({ ctx, x: 0, y: 0, width, height })
+		this.fillRect({ ctx, x: 0, y: 0, width, height, color: 'black' })
 	}
 
 	public saveFrame(ctx: CTX): void {
-		ctx.canvas.toBlob(blob => {
-			if (frameCache.src) {
-				URL.revokeObjectURL(frameCache.src)
-			}
-			frameCache.src = URL.createObjectURL(blob)
-		})
+		frameCache.src = ctx.canvas.toDataURL()
 	}
 
 	public loadFrame(ctx: CTX): void {

@@ -1,9 +1,9 @@
 import { Renderable } from './renderable'
 import { MainMenu } from './scenes/main-menu'
 import { InputHandler } from './input-handler/input-handler'
+import { store } from './store'
 
 export class Game {
-	private _inputHandler = new InputHandler()
 	private _canvas: HTMLCanvasElement = document.createElement('canvas')
 	private _renderContext = this._canvas.getContext(
 		'2d'
@@ -13,14 +13,11 @@ export class Game {
 	)
 
 	constructor(hostElement: HTMLElement) {
+		new InputHandler()
 		hostElement.innerHTML = ''
 		hostElement.appendChild(this._canvas)
 		window.addEventListener('resize', () => this.onClientRectUpdate())
-		this._inputHandler
-			.cursorPosition$()
-			.subscribe(([clientX, clientY]: [number, number]) => {
-				this._activeScene.drawCursor(this._renderContext, clientX, clientY)
-			})
+		store.select(state => state).subscribe(() => this.render())
 		this.onClientRectUpdate()
 	}
 
@@ -42,6 +39,7 @@ export class Game {
 	public render() {
 		this._activeScene.clear(this._renderContext)
 		this._activeScene.render(this._renderContext)
-		this._activeScene.saveFrame(this._renderContext)
+		// this._activeScene.saveFrame(this._renderContext)
+		this._activeScene.drawCursor(this._renderContext)
 	}
 }

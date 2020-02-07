@@ -7,6 +7,9 @@ import { store } from '../store'
 
 import * as fromActions from './actions'
 import { userInputReducer, InputState } from './reducer'
+import { config } from '../../config'
+
+let lastCursorUpdate: number
 
 export class InputHandler {
 	private store: Store<{ input: InputState }> = store
@@ -15,7 +18,11 @@ export class InputHandler {
 		this.store.addReducer(InputHandler.storeNodeName, userInputReducer)
 
 		document.addEventListener('mousemove', (event: MouseEvent) => {
-			this.store.dispatch(fromActions.mouseMove({ event }))
+			const now = new Date().valueOf()
+			if (!lastCursorUpdate || now - lastCursorUpdate > config.cursorPollRate) {
+				this.store.dispatch(fromActions.mouseMove({ event }))
+				lastCursorUpdate = now
+			}
 		})
 		document.addEventListener('mousedown', (event: MouseEvent) =>
 			this.store.dispatch(fromActions.mouseDown({ event }))

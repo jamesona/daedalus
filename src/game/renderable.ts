@@ -21,6 +21,31 @@ export abstract class Renderable extends CanvasAPI {
 		return this.store.currentState
 	}
 
+	public get cursorPosition() {
+		return this.state.input.cursorPosition
+	}
+
+	public printState(
+		ctx: CTX,
+		x: number,
+		y: number,
+		selector?: (state: GameState) => any
+	) {
+		const { currentState } = this.store
+		const text = JSON.stringify(
+			selector ? selector(currentState) : currentState
+		)
+
+		this.fillText({
+			ctx,
+			x,
+			y,
+			text,
+			size: 14,
+			name: config.fontName
+		})
+	}
+
 	public setFontSize(
 		ctx: CanvasRenderingContext2D,
 		size: number,
@@ -29,7 +54,11 @@ export abstract class Renderable extends CanvasAPI {
 		super.setFontSize(ctx, size, font)
 	}
 
-	public drawCursor(ctx: CTX, x: number, y: number) {
+	public drawCursor(
+		ctx: CTX,
+		x: number = this.cursorPosition ? this.cursorPosition[0] : 0,
+		y: number = this.cursorPosition ? this.cursorPosition[1] : 0
+	) {
 		this.loadFrame(ctx)
 		const image = new Image()
 		image.src = Pointer

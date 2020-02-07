@@ -21,10 +21,10 @@ interface MenuItem {
 }
 
 export class MainMenu extends Renderable {
-	private defaultFontSize = config.fontScale
-	private titleFontSize = this.defaultFontSize * 3
-	private activeItem: number | undefined
-	private items: MenuItem[] = [
+	public defaultFontSize = config.fontScale
+	public titleFontSize = this.defaultFontSize * 3
+	public activeItem: number | undefined
+	public items: MenuItem[] = [
 		{
 			text: 'New Game',
 			onSelect: () => {
@@ -56,7 +56,7 @@ export class MainMenu extends Renderable {
 			hitbox: undefined
 		}
 	]
-	private hasActivatedSinceMouseDown: boolean = false
+	public hasActivatedSinceMouseDown: boolean = false
 
 	public onInit() {
 		this.store.select(selectUserInputState).subscribe(() => {
@@ -65,6 +65,7 @@ export class MainMenu extends Renderable {
 	}
 
 	public render(ctx: CTX) {
+		this.printState(ctx, 0, 0, state => state.input.keysDown)
 		savedCtx = ctx
 		const {
 			width: clientWidth,
@@ -115,7 +116,7 @@ export class MainMenu extends Renderable {
 		this.drawItems(ctx, x, y, width, titleHeight, itemHeight, margin)
 	}
 
-	private getTitleDimensions(ctx: CTX) {
+	public getTitleDimensions(ctx: CTX) {
 		const { font } = ctx
 
 		this.setFontSize(ctx, this.titleFontSize)
@@ -126,22 +127,22 @@ export class MainMenu extends Renderable {
 		return { height: Number(fontSize), width }
 	}
 
-	private drawBackground(
+	public drawBackground(
 		ctx: CTX,
 		x: number,
 		y: number,
 		width: number,
 		height: number
 	) {
-		ctx.fillStyle = config.menuColor
-		ctx.fillRect(x, y, width, height)
+		const color = config.menuColor
+		this.fillRect({ ctx, x, y, width, height, color })
 
 		if (this.cursorInArea(x, y, x + width, y + height)) {
 			this.activeItem = undefined
 		}
 	}
 
-	private drawTitle(ctx: CTX, x: number, y: number) {
+	public drawTitle(ctx: CTX, x: number, y: number) {
 		this.fillText({
 			ctx,
 			x,
@@ -155,7 +156,7 @@ export class MainMenu extends Renderable {
 		})
 	}
 
-	private drawItems(
+	public drawItems(
 		ctx: CTX,
 		x: number,
 		y: number,
@@ -182,7 +183,7 @@ export class MainMenu extends Renderable {
 		})
 	}
 
-	private drawMenuItem(
+	public drawMenuItem(
 		ctx: CTX,
 		text: string,
 		x: number,
@@ -263,7 +264,7 @@ export class MainMenu extends Renderable {
 		)
 	}
 
-	private drawMenuItemBackground(
+	public drawMenuItemBackground(
 		ctx: CTX,
 		x: number,
 		y: number,
@@ -284,7 +285,7 @@ export class MainMenu extends Renderable {
 		})
 	}
 
-	private drawMenuItemText(
+	public drawMenuItemText(
 		ctx: CTX,
 		x: number,
 		y: number,
