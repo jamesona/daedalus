@@ -1,4 +1,4 @@
-export const config = {
+const defaults = {
 	title: 'Daedalus',
 	fontName: 'Press Start 2P',
 	fontScale: 100,
@@ -20,3 +20,7 @@ export const config = {
 	roomSize: [16, 16] as [number, number],
 	tileSize: 16
 }
+
+const userPreferences = {}
+
+export const config = Object.assign({}, defaults, userPreferences)
