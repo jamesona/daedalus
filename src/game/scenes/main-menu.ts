@@ -7,6 +7,7 @@ import {
 	selectKeysDown
 } from '../input-handler/selectors'
 import { InputState } from '../input-handler/reducer'
+import { Nullish } from '../../lib/nullish'
 
 type CTX = CanvasRenderingContext2D
 
@@ -38,23 +39,23 @@ export class MainMenu extends Renderable {
 		},
 		{
 			text: 'Continue Game',
-			onSelect: () => {},
+			onSelect: () => { },
 			hitbox: undefined,
 			disabled: true
 		},
 		{
 			text: 'Import Save',
-			onSelect: () => {},
+			onSelect: () => { },
 			hitbox: undefined
 		},
 		{
 			text: 'Export Save',
-			onSelect: () => {},
+			onSelect: () => { },
 			hitbox: undefined
 		},
 		{
 			text: 'About',
-			onSelect: () => {},
+			onSelect: () => { },
 			hitbox: undefined
 		}
 	]
@@ -93,7 +94,7 @@ export class MainMenu extends Renderable {
 					this.activeItem =
 						this.activeItem !== undefined ? this.activeItem + 1 : 0
 				}
-				if (this.isNotNullish(this.activeItem)) {
+				if (Nullish.isNotNullish(this.activeItem)) {
 					if (this.activeItem < 0) {
 						this.activeItem = 0
 					}
@@ -153,7 +154,8 @@ export class MainMenu extends Renderable {
 			size: this.titleFontSize,
 			color: config.menuTextColor,
 			align: 'center',
-			baseline: 'bottom'
+			baseline: 'bottom',
+			name: config.fontName
 		})
 	}
 
@@ -304,7 +306,8 @@ export class MainMenu extends Renderable {
 			y: y + height / 2,
 			size: this.defaultFontSize,
 			baseline: 'middle',
-			align: 'center'
+			align: 'center',
+			name: config.fontName
 		})
 	}
 }
