@@ -2,22 +2,21 @@ import { Renderable } from './renderable'
 import { MainMenu } from './scenes/main-menu'
 import { InputHandler } from './input-handler/input-handler'
 import { store } from './store'
+import { CanvasAPI } from '../lib/canvas'
 
-export class Game {
-	private _canvas: HTMLCanvasElement = document.createElement('canvas')
-	private _renderContext = this._canvas.getContext(
-		'2d'
-	) as CanvasRenderingContext2D
-	private _activeScene: Renderable = new MainMenu((scene: Renderable) =>
-		this.setActiveScene(scene)
-	)
+export class Game extends CanvasAPI {
+	private _activeScene: Renderable | undefined
+	private _resizeListener: any | undefined
 
 	constructor(hostElement: HTMLElement) {
-		new InputHandler()
+		super()
 		hostElement.innerHTML = ''
-		hostElement.appendChild(this._canvas)
-		window.addEventListener('resize', () => this.onClientRectUpdate())
+		hostElement.appendChild(this.canvas)
 		store.select(state => state).subscribe(() => this.render())
+		InputHandler.onInit()
+		this.setActiveScene(
+			new MainMenu((scene: Renderable) => this.setActiveScene(scene))
+		)
 		this.onClientRectUpdate()
 	}
 
@@ -26,9 +25,15 @@ export class Game {
 	}
 
 	public onClientRectUpdate() {
-		const rect: DOMRect = this._canvas.getBoundingClientRect()
-		this._canvas.setAttribute('width', String(rect.width))
-		this._canvas.setAttribute('height', String(rect.height))
+		if (!this._resizeListener) {
+			this._resizeListener = window.addEventListener('resize', () =>
+				this.onClientRectUpdate()
+			)
+		}
+		const rect: DOMRect = this.canvas.getBoundingClientRect()
+		this.canvas.setAttribute('width', String(rect.width))
+		this.canvas.setAttribute('height', String(rect.height))
+		this.clear()
 		this.render()
 	}
 
@@ -37,9 +42,11 @@ export class Game {
 	}
 
 	public render() {
-		this._activeScene.clear(this._renderContext)
-		this._activeScene.render(this._renderContext)
-		// this._activeScene.saveFrame(this._renderContext)
-		this._activeScene.drawCursor(this._renderContext)
+		if (this._activeScene) {
+			this._activeScene.clear()
+			this._activeScene.render()
+			// this._activeScene.saveFrame()
+			this._activeScene.drawCursor()
+		}
 	}
 }

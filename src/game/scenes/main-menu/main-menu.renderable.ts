@@ -1,16 +1,11 @@
-import { Renderable } from '../renderable'
-import { config } from '../../config'
-import { Dungeon } from './dungeon'
-import { BoundingBox } from '../../lib/types'
-import {
-	selectUserInputState,
-	selectKeysDown
-} from '../input-handler/selectors'
-import { Nullish } from '../../lib/nullish'
+import { Renderable } from '../../renderable'
+import { config } from '../../../config'
+import { BoundingBox } from '../../../lib/types'
+import { Nullish } from '../../../lib/nullish'
+import { selectKeysDown } from '../../input-handler/selectors'
+import { Dungeon } from '../dungeon'
+import { updateDimensions } from './store/actions'
 
-type CTX = CanvasRenderingContext2D
-
-let savedCtx: CTX
 let hasActivatedSinceKeyDown: boolean
 
 interface MenuItem {
@@ -24,56 +19,50 @@ export class MainMenu extends Renderable {
 	public defaultFontSize = config.fontScale
 	public titleFontSize = this.defaultFontSize * 3
 	public activeItem: number | undefined
-	public items: MenuItem[] = [
-		{
-			text: 'New Game',
-			onSelect: () => {
-				this.setActiveScene(
-					new Dungeon((scene: Renderable) => this.setActiveScene(scene))
-				)
-			},
-			hitbox: undefined
-		},
-		{
-			text: 'Continue Game',
-			onSelect: () => {},
-			hitbox: undefined,
-			disabled: true
-		},
-		{
-			text: 'Import Save',
-			onSelect: () => {},
-			hitbox: undefined
-		},
-		{
-			text: 'Export Save',
-			onSelect: () => {},
-			hitbox: undefined
-		},
-		{
-			text: 'About',
-			onSelect: () => {},
-			hitbox: undefined
-		}
-	]
+	public items: MenuItem[] | undefined
 	public hasActivatedSinceMouseDown: boolean = false
 
 	public onInit() {
-		this.store.select(selectUserInputState).subscribe(() => {
-			if (savedCtx) this.render(savedCtx)
-		})
-	}
+		this.items = [
+			{
+				text: 'New Game',
+				onSelect: () => {
+					this.setActiveScene(
+						new Dungeon((scene: Renderable) => this.setActiveScene(scene))
+					)
+				},
+				hitbox: undefined
+			},
+			{
+				text: 'Continue Game',
+				onSelect: () => {},
+				hitbox: undefined,
+				disabled: true
+			},
+			{
+				text: 'Import Save',
+				onSelect: () => {},
+				hitbox: undefined
+			},
+			{
+				text: 'Export Save',
+				onSelect: () => {},
+				hitbox: undefined
+			},
+			{
+				text: 'About',
+				onSelect: () => {},
+				hitbox: undefined
+			}
+		]
 
-	public render(ctx: CTX) {
-		this.printState(ctx, 0, 0, state => state.input.keysDown)
-		savedCtx = ctx
 		const {
 			width: clientWidth,
 			height: clientHeight
-		} = ctx.canvas.getBoundingClientRect()
-		const { width: titleWidth, height: titleHeight } = this.getTitleDimensions(
-			ctx
-		)
+		} = this.canvas.getBoundingClientRect()
+
+		const { width: titleWidth, height: titleHeight } = this.getTitleDimensions()
+
 		const margin = titleHeight / 2
 		const itemHeight = titleHeight + margin
 		const width = titleWidth + margin * 2
@@ -81,7 +70,27 @@ export class MainMenu extends Renderable {
 		const x = (clientWidth - width) / 2
 		const y = (clientHeight - height) / 2
 
-		if (this.state) {
+		this.store.dispatch(
+			updateDimensions({
+				dimensions: {
+					body: {
+						width,
+						height,
+						margin,
+						position: [x, y]
+					},
+					title: {
+						height: titleHeight,
+						width: titleWidth,
+						position: [clientWidth / 2, y + titleHeight * 2]
+					}
+				}
+			})
+		)
+	}
+
+	public onChanges() {
+		if (this.items && this.state) {
 			const keysDown = selectKeysDown(this.state)
 			if (keysDown && keysDown.length) {
 				if (this.keyIsPressed('up')) {
@@ -110,41 +119,56 @@ export class MainMenu extends Renderable {
 				hasActivatedSinceKeyDown = false
 			}
 		}
-
-		this.drawBackground(ctx, x, y, width, height)
-		this.drawTitle(ctx, clientWidth / 2, y + titleHeight * 2)
-		this.drawItems(ctx, x, y, width, titleHeight, itemHeight, margin)
 	}
 
-	public getTitleDimensions(ctx: CTX) {
-		const { font } = ctx
+	public render() {
+		// this.printState(
+		// 	100,
+		// 	100,
+		// 	100,
+		// 	state => state.scenes['main-menu'].dimensions.body
+		// )
 
-		this.setFontSize(ctx, this.titleFontSize)
-		const { width } = ctx.measureText(config.title)
-		const fontSize = (ctx.font.match(/\d+/) || [0])[0]
-		ctx.font = font
+		const { dimensions } = this.state.scenes['main-menu']
+		const { height, width, position, margin } = dimensions.body
+		const [x, y] = position
+		const [titleX, titleY] = dimensions.title.position
+		const { height: titleHeight } = dimensions.title
+
+		this.drawBackground(x, y, width, height)
+		this.drawTitle(titleX, titleY)
+		this.drawItems(
+			x,
+			y + titleHeight * 2.5,
+			width,
+			titleHeight,
+			titleHeight + margin,
+			margin
+		)
+	}
+
+	public getTitleDimensions() {
+		const { font } = this.ctx
+
+		this.setFontSize(this.titleFontSize)
+		const { width } = this.ctx.measureText(config.title)
+		const fontSize = (this.ctx.font.match(/\d+/) || [0])[0]
+		this.ctx.font = font
 
 		return { height: Number(fontSize), width }
 	}
 
-	public drawBackground(
-		ctx: CTX,
-		x: number,
-		y: number,
-		width: number,
-		height: number
-	) {
+	public drawBackground(x: number, y: number, width: number, height: number) {
 		const color = config.menuColor
-		this.fillRect({ ctx, x, y, width, height, color })
+		this.fillRect({ x, y, width, height, color })
 
 		if (this.cursorInArea(x, y, x + width, y + height)) {
 			this.activeItem = undefined
 		}
 	}
 
-	public drawTitle(ctx: CTX, x: number, y: number) {
+	public drawTitle(x: number, y: number) {
 		this.fillText({
-			ctx,
 			x,
 			y,
 			text: config.title,
@@ -157,7 +181,6 @@ export class MainMenu extends Renderable {
 	}
 
 	public drawItems(
-		ctx: CTX,
 		x: number,
 		y: number,
 		width: number,
@@ -165,16 +188,13 @@ export class MainMenu extends Renderable {
 		itemHeight: number,
 		margin: number
 	) {
-		const firstItemTopEdge = y + titleHeight * 2.5
-
-		this.items.forEach((menuItem, i) => {
+		this.items?.forEach((menuItem, i) => {
 			const thisItemTopOffset = i * itemHeight
 
 			this.drawMenuItem(
-				ctx,
 				menuItem.text,
 				x,
-				firstItemTopEdge + thisItemTopOffset,
+				y + thisItemTopOffset,
 				width,
 				titleHeight,
 				i,
@@ -184,7 +204,6 @@ export class MainMenu extends Renderable {
 	}
 
 	public drawMenuItem(
-		ctx: CTX,
 		text: string,
 		x: number,
 		y: number,
@@ -193,6 +212,8 @@ export class MainMenu extends Renderable {
 		index: number,
 		margin: number = 0
 	) {
+		if (!this.items) return
+
 		const hitbox: [number, number, number, number] = [
 			x + margin,
 			y,
@@ -231,7 +252,6 @@ export class MainMenu extends Renderable {
 			: config.menuTextColor
 
 		this.drawMenuItemBackground(
-			ctx,
 			x,
 			y,
 			width,
@@ -241,7 +261,6 @@ export class MainMenu extends Renderable {
 		)
 		if (!isDisabled && isActiveItem) {
 			this.drawMenuItemBackground(
-				ctx,
 				x,
 				y,
 				width,
@@ -253,7 +272,6 @@ export class MainMenu extends Renderable {
 		}
 
 		this.drawMenuItemText(
-			ctx,
 			x,
 			y,
 			width,
@@ -265,7 +283,6 @@ export class MainMenu extends Renderable {
 	}
 
 	public drawMenuItemBackground(
-		ctx: CTX,
 		x: number,
 		y: number,
 		width: number,
@@ -275,7 +292,6 @@ export class MainMenu extends Renderable {
 		alpha: number = 1
 	) {
 		this.fillRect({
-			ctx,
 			x: x + margin,
 			y: y,
 			width: width - margin * 2,
@@ -286,7 +302,6 @@ export class MainMenu extends Renderable {
 	}
 
 	public drawMenuItemText(
-		ctx: CTX,
 		x: number,
 		y: number,
 		width: number,
@@ -296,7 +311,6 @@ export class MainMenu extends Renderable {
 		text: string
 	) {
 		this.fillText({
-			ctx,
 			color,
 			text,
 			x: x + (width + margin) / 2,

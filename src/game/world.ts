@@ -5,13 +5,13 @@ export class World extends Renderable {
 	private map: Room[][] = [[]]
 	private currentRoom: [number, number] = [0, 0]
 
-	public render(ctx: CanvasRenderingContext2D) {
+	public render() {
 		const [x, y] = this.currentRoom
 
 		if (!this.map[x][y]) {
 			this.generateRoom(x, y)
 		}
-		this.map[x][y].render(ctx)
+		this.map[x][y].render()
 	}
 
 	private generateRoom(x: number, y: number): Room {

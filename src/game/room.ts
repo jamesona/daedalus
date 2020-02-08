@@ -16,11 +16,11 @@ export class Room extends Renderable {
 	) {
 		super(setActiveScene)
 	}
-	public generate(ctx: CanvasRenderingContext2D) {
+	public generate() {
 		console.log(this.requiredDoors)
 
 		this.tiles = [[]]
-		const { width, height } = ctx.canvas.getBoundingClientRect()
+		const { width, height } = this.ctx.canvas.getBoundingClientRect()
 		const renderSize = Math.min(
 			Math.floor(width / config.roomSize[0]),
 			Math.floor(height / config.roomSize[1])
@@ -81,14 +81,14 @@ export class Room extends Renderable {
 		}
 	}
 
-	public render(ctx: CanvasRenderingContext2D) {
+	public render() {
 		if (!this.tiles) {
-			this.generate(ctx)
+			this.generate()
 		}
 
 		this.tiles?.forEach(column => {
 			column.forEach(tile => {
-				tile.render(ctx)
+				tile.render()
 			})
 		})
 	}

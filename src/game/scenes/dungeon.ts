@@ -6,8 +6,8 @@ export class Dungeon extends Renderable {
 		this.setActiveScene(scene)
 	)
 
-	public render(ctx: CanvasRenderingContext2D) {
-		this.world.render(ctx)
+	public render() {
+		this.world.render()
 
 		// const { width, height } = this.getClientBoundingRect(ctx)
 		// this.fillText({

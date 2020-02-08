@@ -12,16 +12,24 @@ import {
 	InputState,
 	createInitialState as makeInputState
 } from '../input-handler/reducer'
+import { ScenesState } from '../scenes/store/reducer'
+import {
+	createInitialState as makeScenesState,
+	reducer as scenesReducer
+} from '../scenes/store/reducer'
 
 export interface GameState {
 	input: InputState
+	scenes: ScenesState
 }
 
 const initialState: GameState = {
-	input: makeInputState()
+	input: makeInputState(),
+	scenes: makeScenesState()
 }
 const reducers: ActionReducerMap<GameState, any> = {
-	input: userInputReducer
+	input: userInputReducer,
+	scenes: scenesReducer
 }
 
 export const stateSubject: StateSubject = new BehaviorSubject<GameState>(

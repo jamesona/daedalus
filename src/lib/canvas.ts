@@ -3,43 +3,49 @@ export type CTX = CanvasRenderingContext2D
 const frameCache = new Image()
 
 export class CanvasAPI {
-	public getCanvas(ctx: CTX) {
-		return ctx.canvas
+	public static readonly canvas: HTMLCanvasElement = document.createElement(
+		'canvas'
+	)
+	public static readonly ctx: CTX = CanvasAPI.canvas.getContext('2d') as CTX
+
+	public get ctx() {
+		return CanvasAPI.ctx
 	}
 
-	public getClientBoundingRect(ctx: CTX) {
-		return this.getCanvas(ctx).getBoundingClientRect()
+	public get canvas() {
+		return CanvasAPI.canvas
 	}
 
-	public getFontName(ctx: CTX) {
-		return ctx.font.split(' ').pop()
+	public getClientBoundingRect() {
+		return this.canvas.getBoundingClientRect()
 	}
 
-	public clear(ctx: CTX) {
-		const { width, height } = this.getClientBoundingRect(ctx)
-		this.fillRect({ ctx, x: 0, y: 0, width, height, color: 'black' })
+	public getFontName() {
+		return this.ctx.font.split(' ').pop()
 	}
 
-	public saveFrame(ctx: CTX): void {
-		frameCache.src = ctx.canvas.toDataURL()
+	public clear() {
+		const { width, height } = this.getClientBoundingRect()
+		this.fillRect({ x: 0, y: 0, width, height, color: 'black' })
 	}
 
-	public loadFrame(ctx: CTX): void {
+	public saveFrame(): void {
+		frameCache.src = this.ctx.canvas.toDataURL()
+	}
+
+	public loadFrame(): void {
 		if (frameCache.src) {
-			ctx.drawImage(frameCache, 0, 0)
+			this.ctx.drawImage(frameCache, 0, 0)
 		}
 	}
 
-	public setFontSize(
-		ctx: CanvasRenderingContext2D,
-		size: number,
-		font: string
-	) {
-		ctx.font = `${size}% "${font}"`
+	public setFontSize(size: number, font: string) {
+		const { width, height } = document.body.getBoundingClientRect()
+		const relativeSize = Math.floor((size / ((width + height) / 4)) * 100)
+		this.ctx.font = `${relativeSize}px "${font}"`
 	}
 
 	public doWithFont<T = void>({
-		ctx,
 		fn,
 		align,
 		baseline,
@@ -48,56 +54,40 @@ export class CanvasAPI {
 		size,
 		name
 	}: DoWithFontParams<T>): T {
-		const { font, textAlign, textBaseline } = ctx
-		this.setFontSize(ctx, size, name)
-		ctx.textAlign = align || textAlign
-		ctx.textBaseline = baseline || textBaseline
+		const { font, textAlign, textBaseline } = this.ctx
+		this.setFontSize(size, name)
+		this.ctx.textAlign = align || textAlign
+		this.ctx.textBaseline = baseline || textBaseline
 		const value = this.doWithColor({
-			ctx,
-			fn: () => fn(ctx),
+			fn: () => fn(this.ctx),
 			color,
 			alpha
 		})
-		ctx.font = font
-		ctx.textAlign = textAlign
-		ctx.textBaseline = textBaseline
+		this.ctx.font = font
+		this.ctx.textAlign = textAlign
+		this.ctx.textBaseline = textBaseline
 		return value
 	}
 
-	public doWithColor<T = void>({
-		ctx,
-		fn,
-		color,
-		alpha
-	}: DoWithColorParams<T>): T {
-		const { globalAlpha, fillStyle } = ctx
-		ctx.fillStyle = color || fillStyle
-		ctx.globalAlpha = alpha || 1
-		const value = fn(ctx)
-		ctx.fillStyle = fillStyle
-		ctx.globalAlpha = globalAlpha
+	public doWithColor<T = void>({ fn, color, alpha }: DoWithColorParams<T>): T {
+		const { globalAlpha, fillStyle } = this.ctx
+		this.ctx.fillStyle = color || fillStyle
+		this.ctx.globalAlpha = alpha || 1
+		const value = fn(this.ctx)
+		this.ctx.fillStyle = fillStyle
+		this.ctx.globalAlpha = globalAlpha
 		return value
 	}
 
-	public fillRect({
-		ctx,
-		x,
-		y,
-		width,
-		height,
-		color,
-		alpha
-	}: FillRectParams): void {
+	public fillRect({ x, y, width, height, color, alpha }: FillRectParams): void {
 		this.doWithColor({
-			ctx,
-			fn: () => ctx.fillRect(x, y, width, height),
+			fn: () => this.ctx.fillRect(x, y, width, height),
 			color,
 			alpha
 		})
 	}
 
 	public fillText({
-		ctx,
 		text,
 		x,
 		y,
@@ -109,8 +99,7 @@ export class CanvasAPI {
 		name
 	}: FillParams & FontParams & { text: string }): void {
 		this.doWithFont({
-			ctx,
-			fn: () => ctx.fillText(text, x, y),
+			fn: () => this.ctx.fillText(text, x, y),
 			color,
 			alpha,
 			size,
@@ -127,7 +116,6 @@ export interface ColorParams {
 }
 
 export interface FillParams extends ColorParams {
-	ctx: CTX
 	x: number
 	y: number
 }
@@ -149,7 +137,6 @@ export interface FillTextParams extends FillParams {
 }
 
 export interface CtxFunctionWrapper<T> {
-	ctx: CTX
 	fn: (ctx: CTX) => T
 }
 

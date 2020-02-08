@@ -2,7 +2,7 @@ import Pointer from '../assets/img/pointer.png'
 import { config } from '../config'
 import { Store } from '../lib/store'
 import { store, GameState } from './store'
-import { CanvasAPI, CTX } from '../lib/canvas'
+import { CanvasAPI } from '../lib/canvas'
 
 export type ChangeScene = (scene: Renderable) => void
 
@@ -11,11 +11,12 @@ export abstract class Renderable extends CanvasAPI {
 
 	constructor(protected setActiveScene: ChangeScene) {
 		super()
-		if (this.onInit) this.onInit()
+		if (this.onInit) setTimeout(() => (this.onInit as any)(), 1)
 	}
 
 	public onInit?(): void
-	public abstract render(ctx: CTX): void
+	public onChanges?(): void
+	public abstract render(): void
 
 	public get state() {
 		return this.store.currentState
@@ -26,10 +27,11 @@ export abstract class Renderable extends CanvasAPI {
 	}
 
 	public printState(
-		ctx: CTX,
 		x: number,
 		y: number,
-		selector?: (state: GameState) => any
+		size: number,
+		selector?: (state: GameState) => any,
+		color: string = 'yellow'
 	) {
 		const { currentState } = this.store
 		const text = JSON.stringify(
@@ -37,32 +39,27 @@ export abstract class Renderable extends CanvasAPI {
 		)
 
 		this.fillText({
-			ctx,
 			x,
 			y,
 			text,
-			size: 14,
-			name: config.fontName
+			size,
+			name: config.fontName,
+			color
 		})
 	}
 
-	public setFontSize(
-		ctx: CanvasRenderingContext2D,
-		size: number,
-		font: string = config.fontName
-	) {
-		super.setFontSize(ctx, size, font)
+	public setFontSize(size: number, font: string = config.fontName) {
+		super.setFontSize(size, font)
 	}
 
 	public drawCursor(
-		ctx: CTX,
 		x: number = this.cursorPosition ? this.cursorPosition[0] : 0,
 		y: number = this.cursorPosition ? this.cursorPosition[1] : 0
 	) {
-		this.loadFrame(ctx)
+		this.loadFrame()
 		const image = new Image()
 		image.src = Pointer
-		ctx.drawImage(image, x - 4, y - 2)
+		this.ctx.drawImage(image, x - 4, y - 2)
 	}
 
 	public cursorInArea(x1: number, y1: number, x2: number, y2: number) {

@@ -10,10 +10,10 @@ const defaults = {
 	menuItemDisabledColor: '#666',
 	menuTextDisabledColor: '#444',
 	keyBindings: {
-		up: ['ArrowUp', 'w'],
-		down: ['ArrowDown', 's'],
-		left: ['ArrowLeft', 'a'],
-		right: ['ArrowRight', 'd'],
+		up: ['ArrowUp', 'w', 'W'],
+		down: ['ArrowDown', 's', 'S'],
+		left: ['ArrowLeft', 'a', 'A'],
+		right: ['ArrowRight', 'd', 'D'],
 		select: ['Enter', ' '],
 		back: ['Escape', 'Backspace']
 	},

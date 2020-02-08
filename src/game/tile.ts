@@ -39,8 +39,8 @@ export class Tile extends Renderable {
 		return [this.type % 4, Math.floor(this.type / 4)]
 	}
 
-	public render(ctx: CanvasRenderingContext2D) {
-		const { width, height } = ctx.canvas.getBoundingClientRect()
+	public render() {
+		const { width, height } = this.ctx.canvas.getBoundingClientRect()
 		const [tx, ty] = this.textureCoords
 		const [sx, sy] = [tx * config.tileSize, ty * config.tileSize]
 		const sw = config.tileSize
@@ -57,7 +57,7 @@ export class Tile extends Renderable {
 		const img = new Image()
 		img.src = Tiles
 
-		ctx.imageSmoothingEnabled = false
-		ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)
+		this.ctx.imageSmoothingEnabled = false
+		this.ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)
 	}
 }
