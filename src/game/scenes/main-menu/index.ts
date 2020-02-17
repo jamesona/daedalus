@@ -1,1 +1,1 @@
-export * from './main-menu.renderable'
+export * from './main-menu.scene'

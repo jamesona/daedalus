@@ -5,6 +5,7 @@ import { Nullish } from '../../../lib/nullish'
 import { selectKeysDown } from '../../input-handler/selectors'
 import { Dungeon } from '../dungeon'
 import { updateDimensions } from './store/actions'
+import { Scene } from '../scene'
 
 let hasActivatedSinceKeyDown: boolean
 
@@ -15,7 +16,7 @@ interface MenuItem {
 	disabled?: true
 }
 
-export class MainMenu extends Renderable {
+export class MainMenu extends Scene {
 	public defaultFontSize = config.fontScale
 	public titleFontSize = this.defaultFontSize * 3
 	public activeItem: number | undefined

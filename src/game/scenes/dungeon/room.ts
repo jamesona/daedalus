@@ -1,16 +1,17 @@
 import { config } from '../../../config'
-import { Renderable, ChangeScene } from '../../renderable'
+import { Renderable } from '../../renderable'
 import { Tile } from './tile'
+import { Actor } from '../../actor'
 
 export class Room extends Renderable {
 	private tiles: Tile[][] | undefined
 	private get tileList(): Tile[] {
 		return this.tiles?.reduce((list, row) => [...list, ...row], []) || []
 	}
+	private actors: Actor[] = []
 
 	constructor(
 		public readonly id: string,
-		setActiveScene: ChangeScene,
 		private requiredDoors: [boolean, boolean, boolean, boolean] = [
 			false,
 			false,
@@ -18,7 +19,7 @@ export class Room extends Renderable {
 			false
 		]
 	) {
-		super(setActiveScene)
+		super()
 	}
 
 	public onInit() {
@@ -29,6 +30,20 @@ export class Room extends Renderable {
 		this.tileList.forEach(tile => {
 			tile.render()
 		})
+
+		this.actors.forEach(actor => {
+			actor.render()
+		})
+	}
+
+	public addActor(actorToAdd: Actor) {
+		if (!this.actors.includes(actorToAdd)) {
+			this.actors.push(actorToAdd)
+		}
+	}
+
+	public removeActor(actorToRemove: Actor) {
+		this.actors = this.actors.filter(actor => actor !== actorToRemove)
 	}
 
 	public generate() {
@@ -88,8 +103,7 @@ export class Room extends Renderable {
 						Math.floor(roomLeftEdge + column * renderSize),
 						Math.floor(roomTopEdge + row * renderSize)
 					],
-					type,
-					(scene: Renderable) => this.setActiveScene(scene)
+					type
 				)
 			}
 		}

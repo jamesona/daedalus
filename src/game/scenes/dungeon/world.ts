@@ -1,10 +1,10 @@
 import { Room } from './room'
-import { Renderable } from '../../renderable'
 import { addRoom } from './store/actions'
+import { Scene } from '../scene'
 
 const ID_SEP = ':'
 
-export class World extends Renderable {
+export class World extends Scene {
 	public static coordinatesToID(x: number, y: number): string {
 		return `${x}${ID_SEP}${y}`
 	}
@@ -41,9 +41,7 @@ export class World extends Renderable {
 	private generateRoom(x: number, y: number) {
 		this.store.dispatch(
 			addRoom({
-				room: new Room(World.coordinatesToID(x, y), (scene: Renderable) =>
-					this.setActiveScene(scene)
-				),
+				room: new Room(World.coordinatesToID(x, y)),
 				coordinates: [x, y]
 			})
 		)

@@ -1,6 +1,6 @@
 import Tiles from '../../../assets/img/tiles.png'
 import { config } from '../../../config'
-import { Renderable, ChangeScene } from '../../renderable'
+import { Renderable } from '../../renderable'
 
 export class Tile extends Renderable {
 	static readonly textures = (() => {
@@ -35,34 +35,71 @@ export class Tile extends Renderable {
 
 	public needsToRender: boolean = true
 
-	constructor(
-		public location: [number, number],
-		public type: number,
-		setActiveScene: ChangeScene
-	) {
-		super(setActiveScene)
-	}
-
-	public get textureCoords(): [number, number] {
-		return [this.type % 4, Math.floor(this.type / 4)]
+	constructor(public location: [number, number], public type: number) {
+		super()
 	}
 
 	public render() {
-		const { width, height } = this.ctx.canvas.getBoundingClientRect()
-		const [tx, ty] = this.textureCoords
-		const [sx, sy] = [tx * config.tileSize, ty * config.tileSize]
-		const sw = config.tileSize
-		const sh = config.tileSize
+		this.drawTile()
+	}
 
-		const renderSize = Math.min(
+	public get renderSize(): number {
+		const { width, height } = this.ctx.canvas.getBoundingClientRect()
+
+		return Math.min(
 			Math.floor(width / config.roomSize[0]),
 			Math.floor(height / config.roomSize[1])
 		)
-		const [dx, dy] = this.location
-		const dw = renderSize
-		const dh = renderSize
+	}
+
+	public get textureCoords() {
+		const [textureX, textureY] = [this.type % 4, Math.floor(this.type / 4)]
+		const [sourceX, sourceY] = [
+			textureX * config.tileSize,
+			textureY * config.tileSize
+		]
+		const sourceWidth = config.tileSize
+		const sourceHeight = config.tileSize
+
+		const [drawX, drawY] = this.location
+		const drawWidth = this.renderSize
+		const drawHeight = this.renderSize
+
+		return {
+			sourceX,
+			sourceY,
+			sourceWidth,
+			sourceHeight,
+			drawX,
+			drawY,
+			drawWidth,
+			drawHeight
+		}
+	}
+
+	public drawTile() {
+		const {
+			sourceX,
+			sourceY,
+			sourceWidth,
+			sourceHeight,
+			drawX,
+			drawY,
+			drawWidth,
+			drawHeight
+		} = this.textureCoords
 
 		this.ctx.imageSmoothingEnabled = false
-		this.ctx.drawImage(Tile.textures, sx, sy, sw, sh, dx, dy, dw, dh)
+		this.ctx.drawImage(
+			Tile.textures,
+			sourceX,
+			sourceY,
+			sourceWidth,
+			sourceHeight,
+			drawX,
+			drawY,
+			drawWidth,
+			drawHeight
+		)
 	}
 }

@@ -4,12 +4,10 @@ import { Store } from '../lib/store'
 import { store, GameState } from './store'
 import { CanvasAPI } from '../lib/canvas'
 
-export type ChangeScene = (scene: Renderable) => void
-
 export abstract class Renderable extends CanvasAPI {
 	protected store: Store<GameState> = store
 
-	constructor(protected setActiveScene: ChangeScene) {
+	constructor() {
 		super()
 		if (this.onInit) setTimeout(() => (this.onInit as any)(), 1)
 	}
