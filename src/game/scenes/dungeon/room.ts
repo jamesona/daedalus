@@ -1,11 +1,15 @@
-import { config } from '../config'
-import { Renderable, ChangeScene } from './renderable'
-import { Tile, TileTypes } from './tile'
+import { config } from '../../../config'
+import { Renderable, ChangeScene } from '../../renderable'
+import { Tile } from './tile'
 
 export class Room extends Renderable {
 	private tiles: Tile[][] | undefined
+	private get tileList(): Tile[] {
+		return this.tiles?.reduce((list, row) => [...list, ...row], []) || []
+	}
 
 	constructor(
+		public readonly id: string,
 		setActiveScene: ChangeScene,
 		private requiredDoors: [boolean, boolean, boolean, boolean] = [
 			false,
@@ -16,6 +20,17 @@ export class Room extends Renderable {
 	) {
 		super(setActiveScene)
 	}
+
+	public onInit() {
+		this.generate()
+	}
+
+	public render() {
+		this.tileList.forEach(tile => {
+			tile.render()
+		})
+	}
+
 	public generate() {
 		console.log(this.requiredDoors)
 
@@ -44,52 +59,39 @@ export class Room extends Renderable {
 				const isWestWall = column === 0
 				const isEastWall = column === columns - 1
 
-				let type = TileTypes.Floor
+				let type = Tile.type.Floor
 
-				if (isWestWall) type = TileTypes.W_Wall
+				if (isWestWall) type = Tile.type.W_Wall
 
-				if (isEastWall) type = TileTypes.E_Wall
+				if (isEastWall) type = Tile.type.E_Wall
 
 				if (isNorthOrSouthWall) {
 					if (isNorthWall) {
 						if (!isEastOrWestWall) {
-							type = TileTypes.Wall_4
+							type = Tile.type.Wall_4
 						}
 					}
 
 					if (isSouthWall) {
 						if (!isEastOrWestWall) {
-							type = TileTypes.Wall_1
+							type = Tile.type.Wall_1
 						} else if (isWestWall) {
-							type = TileTypes.SW_Corner
+							type = Tile.type.SW_Corner
 						} else if (isEastWall) {
-							type = TileTypes.SE_Corner
+							type = Tile.type.SE_Corner
 						}
 					}
 				}
 
 				this.tiles[column][row] = new Tile(
-					this.store,
-					(scene: Renderable) => this.setActiveScene(scene),
 					[
 						Math.floor(roomLeftEdge + column * renderSize),
 						Math.floor(roomTopEdge + row * renderSize)
 					],
-					type
+					type,
+					(scene: Renderable) => this.setActiveScene(scene)
 				)
 			}
 		}
-	}
-
-	public render() {
-		if (!this.tiles) {
-			this.generate()
-		}
-
-		this.tiles?.forEach(column => {
-			column.forEach(tile => {
-				tile.render()
-			})
-		})
 	}
 }
