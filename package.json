@@ -18,7 +18,8 @@
 		"serve": "webpack-dev-server --watch",
 		"webpack": "webpack --config=webpack.config.js",
 		"build": "npm run webpack -- --mode=development",
-		"build-prod": "npm run webpack -- --mode=production"
+		"build-prod": "npm run webpack -- --mode=production",
+		"deploy": "git push --delete origin gh-pages && git subtree push --prefix dist origin gh-pages"
 	},
 	"prettier": {
 		"arrowParens": "avoid",
