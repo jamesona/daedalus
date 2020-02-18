@@ -8,7 +8,7 @@ export class Room extends Renderable {
 	private get tileList(): Tile[] {
 		return this.tiles?.reduce((list, row) => [...list, ...row], []) || []
 	}
-	private actors: Actor[] = []
+	public actors: Actor[] = []
 
 	constructor(
 		public readonly id: string,
@@ -47,7 +47,8 @@ export class Room extends Renderable {
 	}
 
 	public generate() {
-		console.log(this.requiredDoors)
+		if (this.requiredDoors) {
+		}
 
 		this.tiles = [[]]
 		const { width, height } = this.ctx.canvas.getBoundingClientRect()

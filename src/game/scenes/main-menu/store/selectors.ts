@@ -1,8 +1,8 @@
 import { createSelector } from '../../../../lib/store'
-import { scenesState } from '../../store/selectors'
+import { selectScenes } from '../../store/selectors'
 
 export const selectMainMenuState = createSelector(
-	scenesState,
+	selectScenes,
 	state => state['main-menu']
 )
 

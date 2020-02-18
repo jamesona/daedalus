@@ -1,6 +1,10 @@
+import { tap, map, first, take } from 'rxjs/operators'
+
+import { ofType } from '../../../lib/store'
 import { Room } from './room'
-import { addRoom } from './store/actions'
 import { Scene } from '../scene'
+import { selectActiveRoom, selectRooms } from './store/selectors'
+import * as fromActions from './store/actions'
 
 const ID_SEP = ':'
 
@@ -16,31 +20,48 @@ export class World extends Scene {
 			.slice(0, 2) as [number, number]
 	}
 
-	private get rooms() {
-		return this.state.scenes.dungeon.rooms
+	public get rooms() {
+		return selectRooms(this.state)
 	}
-	private currentRoomCoordinates: [number, number] = [0, 0]
-	private get currentRoom(): Room | undefined {
-		const [x, y] = this.currentRoomCoordinates
-		const id = World.coordinatesToID(x, y)
-		return this.rooms.entities[id]
+
+	public get currentRoom(): Room | null {
+		return selectActiveRoom(this.state)
 	}
+
+	public onEnterRoom$ = this.store.actions$.pipe(
+		ofType(fromActions.enterRoom),
+		tap(({ x, y }) => this.generateRoom(x, y)),
+		map(({ x, y }) => {
+			const roomID = World.coordinatesToID(x, y)
+			this.store
+				.selectByFunction(selectRooms)
+				.pipe(
+					first(rooms => !!rooms.entities[roomID]),
+					take(1)
+				)
+				.subscribe(() => {
+					debugger
+					this.store.dispatch(
+						fromActions.setActiveRoom({
+							roomID
+						})
+					)
+				})
+		})
+	)
 
 	public onInit() {
-		const [x, y] = this.currentRoomCoordinates
-
-		if (!this.rooms.ids.includes(World.coordinatesToID(x, y))) {
-			this.generateRoom(x, y)
-		}
+		this.onEnterRoom$.subscribe(() => console.log('Entered A Room'))
+		this.store.dispatch(fromActions.enterRoom({ x: 0, y: 0 }))
 	}
 
 	public render() {
 		this.currentRoom && this.currentRoom.render()
 	}
 
-	private generateRoom(x: number, y: number) {
+	public generateRoom(x: number, y: number) {
 		this.store.dispatch(
-			addRoom({
+			fromActions.addRoom({
 				room: new Room(World.coordinatesToID(x, y)),
 				coordinates: [x, y]
 			})

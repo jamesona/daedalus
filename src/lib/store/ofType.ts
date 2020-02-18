@@ -1,6 +1,7 @@
-import { ActionCreator, Creator, Action } from './models'
 import { OperatorFunction } from 'rxjs'
 import { filter } from 'rxjs/operators'
+
+import { ActionCreator, Creator, Action } from './models'
 
 type ActionExtractor<
 	T extends string | AC,

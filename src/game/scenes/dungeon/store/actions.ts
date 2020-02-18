@@ -10,3 +10,13 @@ export const addRoom = createAction(
 		room: Room
 	}>()
 )
+
+export const enterRoom = createAction(
+	'[Dungeon] Enter Room',
+	props<{ x: number; y: number }>()
+)
+
+export const setActiveRoom = createAction(
+	'[Dungeon] Set Active Room',
+	props<{ roomID: string }>()
+)

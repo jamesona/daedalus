@@ -12,7 +12,7 @@ export class Game extends CanvasAPI {
 		super()
 		hostElement.innerHTML = ''
 		hostElement.appendChild(this.canvas)
-		store.select(state => state).subscribe(() => this.render())
+		store.subscribe(() => this.render())
 		InputHandler.onInit()
 		this.setActiveScene(
 			new MainMenu((scene: Renderable) => this.setActiveScene(scene))
