@@ -2,3 +2,4 @@
 .sass-cache
 js
 node_modules
+dist
