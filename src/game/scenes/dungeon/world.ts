@@ -5,6 +5,10 @@ import { Room } from './room'
 import { Scene } from '../scene'
 import { selectActiveRoom, selectRooms } from './store/selectors'
 import * as fromActions from './store/actions'
+import {
+	CardinalMap,
+	CardinalDirection
+} from '../../../lib/cardinal-directions'
 
 const ID_SEP = ':'
 
@@ -60,11 +64,33 @@ export class World extends Scene {
 	}
 
 	public generateRoom(x: number, y: number) {
+		const neighbors = this.findNeighbors(x, y)
+		const requiredDoors = (Object.keys(
+			neighbors
+		) as CardinalDirection[]).reduce((map, direction) => {
+			// TODO: don't just detect a room, detect if that room has a door in this direction
+			map[direction] = !!neighbors[direction]
+			return map
+		}, {} as Partial<CardinalMap<boolean>>) as CardinalMap<boolean>
+
 		this.store.dispatch(
 			fromActions.addRoom({
-				room: new Room(World.coordinatesToID(x, y)),
+				room: new Room(World.coordinatesToID(x, y), requiredDoors),
 				coordinates: [x, y]
 			})
 		)
+	}
+
+	public findNeighbors(x: number, y: number): CardinalMap<Room | undefined> {
+		return {
+			north: this.rooms.entities[World.coordinatesToID(x, y + 1)],
+			northeast: this.rooms.entities[World.coordinatesToID(x + 1, y + 1)],
+			east: this.rooms.entities[World.coordinatesToID(x + 1, y)],
+			southeast: this.rooms.entities[World.coordinatesToID(x + 1, y - 1)],
+			south: this.rooms.entities[World.coordinatesToID(x, y - 1)],
+			southwest: this.rooms.entities[World.coordinatesToID(x - 1, y - 1)],
+			west: this.rooms.entities[World.coordinatesToID(x - 1, y)],
+			northwest: this.rooms.entities[World.coordinatesToID(x - 1, y + 1)]
+		}
 	}
 }

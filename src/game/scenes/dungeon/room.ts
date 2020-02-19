@@ -3,6 +3,7 @@ import { Renderable } from '../../renderable'
 import { Tile } from './tile'
 import { Actor } from '../../actor'
 import { ExtendedMath } from '../../../lib/math'
+import { CardinalMap } from '../../../lib/cardinal-directions'
 
 export class Room extends Renderable {
 	private tiles: Tile[][] | undefined
@@ -13,12 +14,16 @@ export class Room extends Renderable {
 
 	constructor(
 		public readonly id: string,
-		private requiredDoors: [boolean, boolean, boolean, boolean] = [
-			false,
-			false,
-			false,
-			false
-		]
+		private requiredDoors: CardinalMap<boolean> = {
+			north: false,
+			northeast: false,
+			east: false,
+			southeast: false,
+			south: false,
+			southwest: false,
+			west: false,
+			northwest: false
+		}
 	) {
 		super()
 	}
