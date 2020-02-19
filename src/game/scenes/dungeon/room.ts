@@ -14,7 +14,7 @@ export class Room extends Renderable {
 
 	constructor(
 		public readonly id: string,
-		private requiredDoors: CardinalMap<boolean> = {
+		public requiredDoors: CardinalMap<boolean> = {
 			north: false,
 			northeast: false,
 			east: false,

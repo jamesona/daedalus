@@ -7,7 +7,8 @@ import { selectActiveRoom, selectRooms } from './store/selectors'
 import * as fromActions from './store/actions'
 import {
 	CardinalMap,
-	CardinalDirection
+	CardinalDirection,
+	getCardinalCompliment
 } from '../../../lib/cardinal-directions'
 
 const ID_SEP = ':'
@@ -68,8 +69,11 @@ export class World extends Scene {
 		const requiredDoors = (Object.keys(
 			neighbors
 		) as CardinalDirection[]).reduce((map, direction) => {
-			// TODO: don't just detect a room, detect if that room has a door in this direction
-			map[direction] = !!neighbors[direction]
+			map[direction] =
+				!!neighbors[direction] &&
+				// TODO: don't just detect a room, detect if that room has a door in this direction
+				// this is a start, but not a great one
+				neighbors[direction]?.requiredDoors[getCardinalCompliment(direction)]
 			return map
 		}, {} as Partial<CardinalMap<boolean>>) as CardinalMap<boolean>
 
