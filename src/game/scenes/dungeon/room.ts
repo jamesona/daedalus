@@ -2,6 +2,7 @@ import { config } from '../../../config'
 import { Renderable } from '../../renderable'
 import { Tile } from './tile'
 import { Actor } from '../../actor'
+import { ExtendedMath } from '../../../lib/math'
 
 export class Room extends Renderable {
 	private tiles: Tile[][] | undefined
@@ -68,45 +69,59 @@ export class Room extends Renderable {
 			this.tiles[column] = []
 
 			for (let row = 0; row < rows; row++) {
-				const isNorthOrSouthWall = row % (rows - 1) == 0
-				const isNorthWall = row === 0
-				const isSouthWall = row === rows - 1
-				const isEastOrWestWall = column % (columns - 1) == 0
-				const isWestWall = column === 0
-				const isEastWall = column === columns - 1
-
-				let type = Tile.type.Floor
-
-				if (isWestWall) type = Tile.type.W_Wall
-
-				if (isEastWall) type = Tile.type.E_Wall
-
-				if (isNorthOrSouthWall) {
-					if (isNorthWall) {
-						if (!isEastOrWestWall) {
-							type = Tile.type.Wall_4
-						}
-					}
-
-					if (isSouthWall) {
-						if (!isEastOrWestWall) {
-							type = Tile.type.Wall_1
-						} else if (isWestWall) {
-							type = Tile.type.SW_Corner
-						} else if (isEastWall) {
-							type = Tile.type.SE_Corner
-						}
-					}
-				}
-
 				this.tiles[column][row] = new Tile(
 					[
 						Math.floor(roomLeftEdge + column * renderSize),
 						Math.floor(roomTopEdge + row * renderSize)
 					],
-					type
+					this.determineTileType(column, columns - 1, row, rows - 1)
 				)
 			}
 		}
+	}
+
+	private determineTileType(
+		column: number,
+		columnCount: number,
+		row: number,
+		rowCount: number
+	): number {
+		const properties = {
+			isNorthOrSouthWall: row % rowCount == 0,
+			isNorthWall: row === 0,
+			isSouthWall: row === rowCount,
+			isEastOrWestWall: column % columnCount == 0,
+			isWestWall: column === 0,
+			isEastWall: column === columnCount
+		}
+
+		let type = Tile.type.Floor
+
+		if (properties.isWestWall) {
+			if (!properties.isSouthWall) {
+				type = Tile.type.W_Wall
+			} else {
+				type = Tile.type.SW_Corner
+			}
+		}
+
+		if (properties.isEastWall) {
+			if (!properties.isSouthWall) {
+				type = Tile.type.E_Wall
+			} else {
+				type = Tile.type.SE_Corner
+			}
+		}
+
+		if (properties.isNorthOrSouthWall) {
+			if (!properties.isEastOrWestWall) {
+				type =
+					Math.random() < config.brokenWallProbability
+						? ExtendedMath.randomInt(0, 6)
+						: 0
+			}
+		}
+
+		return type
 	}
 }

@@ -19,7 +19,8 @@ const defaults = {
 	},
 	cursorPollRate: 10,
 	roomSize: [16, 16] as [number, number],
-	tileSize: 16
+	tileSize: 16,
+	brokenWallProbability: 0.25
 }
 
 const userPreferences = {}
