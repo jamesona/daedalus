@@ -19,7 +19,7 @@
 		"webpack": "webpack --config=webpack.config.js",
 		"build": "npm run webpack -- --mode=development",
 		"build-prod": "npm run webpack -- --mode=production",
-		"deploy": "./deploy"
+		"deploy": "npm run build-prod && cd dist && git add --all && git commit -m \"Release at $(date)\" && git push -f"
 	},
 	"prettier": {
 		"arrowParens": "avoid",
