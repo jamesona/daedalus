@@ -7,7 +7,6 @@ import { selectActiveRoom, selectRooms } from './store/selectors'
 import * as fromActions from './store/actions'
 import {
 	CardinalMap,
-	CardinalDirection,
 	getCardinalCompliment
 } from '../../../lib/cardinal-directions'
 
@@ -66,16 +65,12 @@ export class World extends Scene {
 
 	public generateRoom(x: number, y: number) {
 		const neighbors = this.findNeighbors(x, y)
-		const requiredDoors = (Object.keys(
-			neighbors
-		) as CardinalDirection[]).reduce((map, direction) => {
-			map[direction] =
-				!!neighbors[direction] &&
-				// TODO: don't just detect a room, detect if that room has a door in this direction
-				// this is a start, but not a great one
-				neighbors[direction]?.requiredDoors[getCardinalCompliment(direction)]
-			return map
-		}, {} as Partial<CardinalMap<boolean>>) as CardinalMap<boolean>
+		const requiredDoors = objectMap(neighbors, (neighbor, direction) => {
+			// TODO: don't just detect a room, detect if that room has a door in this direction
+			// this is a start, but not a great one
+			const opposite = getCardinalCompliment(direction)
+			return !!neighbor && neighbor.doors[opposite]
+		})
 
 		this.store.dispatch(
 			fromActions.addRoom({
@@ -97,4 +92,18 @@ export class World extends Scene {
 			northwest: this.rooms.entities[World.coordinatesToID(x - 1, y + 1)]
 		}
 	}
+}
+
+function objectMap<T, U>(
+	object: T,
+	mapFn: (val: T[keyof T], key: keyof T) => U
+): { [key in keyof T]: U } {
+	return (Object.keys(object) as Array<keyof typeof object>).reduce(
+		(map, key: keyof T) => {
+			const val: T[keyof T] = object[key]
+			map[key] = mapFn(val, key) as U
+			return map
+		},
+		{} as { [key in keyof T]: U }
+	)
 }

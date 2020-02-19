@@ -14,7 +14,7 @@ export class Room extends Renderable {
 
 	constructor(
 		public readonly id: string,
-		public requiredDoors: CardinalMap<boolean> = {
+		public doors: CardinalMap<boolean> = {
 			north: false,
 			northeast: false,
 			east: false,
@@ -53,7 +53,7 @@ export class Room extends Renderable {
 	}
 
 	public generate() {
-		if (this.requiredDoors) {
+		if (this.doors) {
 		}
 
 		this.tiles = [[]]
