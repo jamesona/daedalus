@@ -65,9 +65,7 @@ export class World extends Scene {
 
 	public generateRoom(x: number, y: number) {
 		const neighbors = this.findNeighbors(x, y)
-		const requiredDoors = objectMap(neighbors, (neighbor, direction) => {
-			// TODO: don't just detect a room, detect if that room has a door in this direction
-			// this is a start, but not a great one
+		const requiredDoors = mapValues(neighbors, (neighbor, direction) => {
 			const opposite = getCardinalCompliment(direction)
 			return !!neighbor && neighbor.doors[opposite]
 		})
@@ -83,24 +81,20 @@ export class World extends Scene {
 	public findNeighbors(x: number, y: number): CardinalMap<Room | undefined> {
 		return {
 			north: this.rooms.entities[World.coordinatesToID(x, y + 1)],
-			northeast: this.rooms.entities[World.coordinatesToID(x + 1, y + 1)],
 			east: this.rooms.entities[World.coordinatesToID(x + 1, y)],
-			southeast: this.rooms.entities[World.coordinatesToID(x + 1, y - 1)],
 			south: this.rooms.entities[World.coordinatesToID(x, y - 1)],
-			southwest: this.rooms.entities[World.coordinatesToID(x - 1, y - 1)],
-			west: this.rooms.entities[World.coordinatesToID(x - 1, y)],
-			northwest: this.rooms.entities[World.coordinatesToID(x - 1, y + 1)]
+			west: this.rooms.entities[World.coordinatesToID(x - 1, y)]
 		}
 	}
 }
 
-function objectMap<T, U>(
-	object: T,
+function mapValues<T, U>(
+	obj: T,
 	mapFn: (val: T[keyof T], key: keyof T) => U
 ): { [key in keyof T]: U } {
-	return (Object.keys(object) as Array<keyof typeof object>).reduce(
+	return (Object.keys(obj) as Array<keyof typeof obj>).reduce(
 		(map, key: keyof T) => {
-			const val: T[keyof T] = object[key]
+			const val: T[keyof T] = obj[key]
 			map[key] = mapFn(val, key) as U
 			return map
 		},

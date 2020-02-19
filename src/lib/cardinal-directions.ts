@@ -1,30 +1,22 @@
 export enum CardinalDirections {
 	'north',
-	'northeast',
 	'east',
-	'southeast',
 	'south',
-	'southwest',
-	'west',
-	'northwest'
+	'west'
 }
 
-export enum ComplimentaryCardinalDirections {
-	'south',
-	'southwest',
-	'west',
-	'northwest',
-	'north',
+export enum IntercardinalDirections {
 	'northeast',
-	'east',
-	'southeast'
+	'southeast',
+	'southwest',
+	'northwest'
 }
 
 export function getCardinalCompliment(
 	direction: CardinalDirection
 ): CardinalDirection {
 	return CardinalDirections[
-		(CardinalDirections[direction] + 4) % 8
+		(CardinalDirections[direction] + 2) % 4
 	] as CardinalDirection
 }
 

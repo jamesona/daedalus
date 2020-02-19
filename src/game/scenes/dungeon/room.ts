@@ -16,16 +16,19 @@ export class Room extends Renderable {
 		public readonly id: string,
 		public doors: CardinalMap<boolean> = {
 			north: false,
-			northeast: false,
 			east: false,
-			southeast: false,
 			south: false,
-			southwest: false,
-			west: false,
-			northwest: false
+			west: false
 		}
 	) {
 		super()
+	}
+
+	public get doorCount(): number {
+		return Object.values(this.doors).reduce(
+			(count, hasDoor) => count + (hasDoor ? 1 : 0),
+			0
+		)
 	}
 
 	public onInit() {
