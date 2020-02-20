@@ -44,7 +44,6 @@ export class World extends Scene {
 					take(1)
 				)
 				.subscribe(() => {
-					debugger
 					this.store.dispatch(
 						fromActions.setActiveRoom({
 							roomID

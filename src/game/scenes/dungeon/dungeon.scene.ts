@@ -24,7 +24,6 @@ export class Dungeon extends Scene {
 	public onInit() {
 		this.onSetActiveRoom$.subscribe(activeRoom => {
 			if (activeRoom) {
-				debugger
 				if (this.previousActiveRoom) {
 					this.previousActiveRoom.removeActor(this.player)
 				}
